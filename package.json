@@ -1,0 +1,15 @@
+{
+  "name": "playlist_casparcg",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "casparcg-connection": "^4.7.0",
+    "decimal.js": "^10.1.1"
+  }
+}
