@@ -3,10 +3,6 @@ const {app, BrowserWindow, Notification} = require('electron');
 const Playout = require('./playlist');
 
 let runplaylist = Playout.runplaylist;
-
-//const axios = require('axios');
-
-
 let win;
 
 function createWindow() {
@@ -21,7 +17,6 @@ function createWindow() {
 
     // Open the DevTools.
     win.webContents.openDevTools();
-
 
 
     // Emitted when the window is closed.
