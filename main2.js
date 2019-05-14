@@ -1,12 +1,50 @@
 const electron = require('electron');
 const {app, BrowserWindow, Notification} = require('electron');
-const Playout = require('./playlist');
 
-let runplaylist = Playout.runplaylist;
+const notifier = require('node-notifier');
+
+notifier.notify({
+    title: 'My notification',
+    message: 'Hello, there!'
+});
+
+const Playout = require('playlist');
+
+
 
 //const axios = require('axios');
 
 let win;
+
+/*
+class Test {
+    constructor (reiksme) {
+        console.log(reiksme); // labas
+
+        this.reiksme = reikmse;
+    }
+
+    nerodyk () {
+        this.reiksme = false;
+
+        this.kita_funkcija();
+    }
+
+    static parodyk () {
+        const test = new Test();
+
+        test.nerodyk();
+
+        return test;
+    }
+}
+
+const test = new Test('labas');
+
+const test2 = Test.parodyk();
+
+test2.nerodyk();*/
+
 
 function createWindow() {
     // Create the browser window.
@@ -21,8 +59,6 @@ function createWindow() {
     // Open the DevTools.
     win.webContents.openDevTools();
 
-
-
     // Emitted when the window is closed.
     win.on('closed', () => {
         // Dereference the window object, usually you would store windows
@@ -31,7 +67,7 @@ function createWindow() {
         win = null
     });
 
-    runplaylist();
+
 
 }
 

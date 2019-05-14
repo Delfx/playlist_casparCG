@@ -1,54 +1,39 @@
 const {CasparCG} = require("casparcg-connection");
 const Decimal = require('decimal.js');
+const notifier = require('node-notifier');
 
 const connection = new CasparCG();
 
-(async () => {
-        const playlist = await connection.thumbnailList();
-        for (const entry of playlist.response.data) {
-            try {
-                console.log('--- GROJAM ', entry.name);
+const runplaylist = async () => {
+    const playlist = await connection.thumbnailList();
+    for (const entry of playlist.response.data) {
+        try {
+            console.log('--- GROJAM ', entry.name);
 
-                await connection.play(1, 1, entry.name);
-                await playplay(entry);
+            await connection.play(1, 1, entry.name);
+            await playplay(entry);
 
-            } catch (err) {
-                console.log(err);
-            }
+        } catch (err) {
+            console.log(err);
         }
-        console.log("Pabaiga");
-        await connection.disconnect();
     }
-)();
+    console.log("Pabaiga");
+    await connection.disconnect();
+};
 
 const playplay = async entry => {
     console.log('-- ISKVIECIAM');
 
+    await new Promise(resolve => setTimeout(resolve, 100));
     const videoinfo = await connection.info(1, 1);
-    // console.log(videoinfo.response.data);
     const videotime = videoinfo.response.data.stage;
 
-    // if (!videotime) {
-    //     console.log("nera");
-    //     await playplay(entry);
-    //     return;
-    // }
 
     if (!('file' in videotime.layer.layer_1.foreground)) {
-         console.log("nera");
-         await playplay(entry);
-         return;
-    }
-
-    //const lasttime = videotime.layer.layer_1.foreground.file.time[1];
-
-    /*if (Number.parseInt(lasttime, 10) === 0) {
-        console.log("0 != 0 skipinam");
+        console.log("nera");
         await playplay(entry);
         return;
-    }*/
-
-    await new Promise(resolve => setTimeout(resolve, 100));
+    }
 
     await new Promise(async (resolve, reject) => {
         const intervalFunction = (async () => {
@@ -63,6 +48,10 @@ const playplay = async entry => {
                 console.log("lygu");
                 console.log("isgrojo" + entry.name);
                 clearInterval(intervalId);
+                notifier.notify({
+                    title: entry.name,
+                    message: entry.name
+                });
                 resolve();
             }
         });
@@ -75,9 +64,13 @@ const playplay = async entry => {
 };
 
 
+module.exports = {
+    runplaylist: function () {
+        return runplaylist();
+    }
+};
 
-
-
+runplaylist();
 
 
 
