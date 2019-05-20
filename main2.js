@@ -16,34 +16,34 @@ const Playout = require('playlist');
 
 let win;
 
-/*
-class Test {
-    constructor (reiksme) {
-        console.log(reiksme); // labas
 
-        this.reiksme = reikmse;
-    }
-
-    nerodyk () {
-        this.reiksme = false;
-
-        this.kita_funkcija();
-    }
-
-    static parodyk () {
-        const test = new Test();
-
-        test.nerodyk();
-
-        return test;
-    }
-}
-
-const test = new Test('labas');
-
-const test2 = Test.parodyk();
-
-test2.nerodyk();*/
+// class Test {
+//     constructor (reiksme) {
+//         console.log(reiksme); // labas
+//
+//         this.reiksme = reikmse;
+//     }
+//
+//     nerodyk () {
+//         this.reiksme = false;
+//
+//         this.kita_funkcija();
+//     }
+//
+//     static parodyk () {
+//         const test = new Test();
+//
+//         test.nerodyk();
+//
+//         return test;
+//     }
+// }
+//
+// const test = new Test('labas');
+//
+// const test2 = Test.parodyk();
+//
+// test2.nerodyk();
 
 
 function createWindow() {

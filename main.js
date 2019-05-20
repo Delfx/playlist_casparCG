@@ -1,15 +1,18 @@
 const electron = require('electron');
-const {app, BrowserWindow, Notification} = require('electron');
-const Playout = require('./playlist');
+const {app, BrowserWindow, Notification, ipcMain } = require('electron');
+const Playout = require('./playlist.js');
 
-let runplaylist = Playout.runplaylist;
 let win;
 
 function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({
         width: 800,
-        height: 600
+        height: 600,
+
+        webPreferences: {
+            nodeIntegration: true
+        }
     });
 
     // and load the index.html of the app.
@@ -27,8 +30,15 @@ function createWindow() {
         win = null
     });
 
-    runplaylist();
 
+    Playout();
+    // const playout = new Playout();
+    //
+    ipcMain.on('playout', (event, data) => {
+        /* data = [ { name: '...' }, { name: '.....', }]
+         */
+       playout.run(JSON.parse(data));
+    });
 }
 
 // This method will be called when Electron has finished
@@ -49,7 +59,7 @@ app.on('activate', () => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (win === null) {
-        createWindow()
+        createWindow();
     }
 });
 
