@@ -27,7 +27,7 @@ const runplaylist = async () => {
 const playplay = async entry => {
     console.log('-- ISKVIECIAM');
 
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 400));
     const videoinfo = await connection.info(1, 1);
     const videotime = videoinfo.response.data.stage;
 
@@ -75,6 +75,8 @@ const playplay = async entry => {
 };
 
 module.exports = runplaylist;
+
+
 
 
 
