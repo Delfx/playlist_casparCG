@@ -37,7 +37,8 @@ function createWindow() {
     ipcMain.on('playout', (event, data) => {
         /* data = [ { name: '...' }, { name: '.....', }]
          */
-       playout.run(JSON.parse(data));
+        console.log(data)
+       // playout.run(JSON.parse(data));
     });
 }
 

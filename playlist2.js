@@ -5,16 +5,18 @@ const notifier = require('node-notifier');
 
 // Notification.send()
 
-class Class {
-    constructor(){
+class test {
+    constructor() {
 
     }
+
 
 }
 
 const connection = new CasparCG();
 
 const runplaylist = async () => {
+    // const playlist = await connection.thumbnailList();
     const playlist = await connection.thumbnailList();
     for (const entry of playlist.response.data) {
         try {
