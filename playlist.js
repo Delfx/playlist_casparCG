@@ -51,9 +51,9 @@ const playplay = async entry => {
             const videotimefirst = videotime2.layer.layer_1.foreground.file.time[0];
             const videotimelast = videotime2.layer.layer_1.foreground.file.time[1];
             console.log(videotimefirst, videotimelast);
-            const x = new Decimal(videotimelast); // pakeisti pavadinima ne i X
+            const decimalnumber = new Decimal(videotimelast); // pakeisti pavadinima ne i X
 
-            if (x.equals(new Decimal(videotimefirst))) {
+            if (decimalnumber.equals(new Decimal(videotimefirst))) {
                 console.log("lygu");
                 console.log("isgrojo" + entry.name);
                 clearInterval(intervalId);

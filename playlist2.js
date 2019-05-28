@@ -5,19 +5,21 @@ const notifier = require('node-notifier');
 
 // Notification.send()
 
-class test {
-    constructor() {
 
+class Playerlist {
+
+    static get constant1() {
+        return runplaylist(12)
     }
-
 
 }
 
+
 const connection = new CasparCG();
 
-const runplaylist = async () => {
+const runplaylist = async (data) => {
     // const playlist = await connection.thumbnailList();
-    const playlist = await connection.thumbnailList();
+    const playlist = await data;
     for (const entry of playlist.response.data) {
         try {
             console.log('--- GROJAM ', entry.name);
@@ -60,9 +62,9 @@ const playplay = async entry => {
             const videotimefirst = videotime2.layer.layer_1.foreground.file.time[0];
             const videotimelast = videotime2.layer.layer_1.foreground.file.time[1];
             console.log(videotimefirst, videotimelast);
-            const x = new Decimal(videotimelast); // pakeisti pavadinima ne i X
+            const decimalnumber = new Decimal(videotimelast); // pakeisti pavadinima ne i X
 
-            if (x.equals(new Decimal(videotimefirst))) {
+            if (decimalnumber.equals(new Decimal(videotimefirst))) {
                 console.log("lygu");
                 console.log("isgrojo" + entry.name);
                 clearInterval(intervalId);
@@ -84,6 +86,8 @@ const playplay = async entry => {
 };
 
 module.exports = runplaylist;
+
+
 
 
 

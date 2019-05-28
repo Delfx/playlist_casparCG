@@ -2,6 +2,9 @@ const electron = require('electron');
 const {app, BrowserWindow, Notification, ipcMain } = require('electron');
 const Playout = require('./playlist.js');
 
+
+
+
 let win;
 
 function createWindow() {

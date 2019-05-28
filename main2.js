@@ -1,14 +1,17 @@
 const electron = require('electron');
 const {app, BrowserWindow, Notification} = require('electron');
-
 const notifier = require('node-notifier');
+
 
 notifier.notify({
     title: 'My notification',
     message: 'Hello, there!'
 });
 
-const Playout = require('playlist');
+const Playout = require('./playlist2');
+
+
+
 
 
 
