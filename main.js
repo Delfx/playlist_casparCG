@@ -40,7 +40,13 @@ function createWindow() {
     ipcMain.on('playout', (event, data) => {
         /* data = [ { name: '...' }, { name: '.....', }]
          */
-        console.log(data)
+        console.log(data);
+
+        // new DataClass(data)
+        // new TestClass(data)
+
+        // new TAVO_SUGALVOTA_KLASE(data);
+        // this.data = data;
        // playout.run(JSON.parse(data));
     });
 }

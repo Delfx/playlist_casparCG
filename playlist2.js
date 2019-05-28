@@ -6,21 +6,36 @@ const notifier = require('node-notifier');
 // Notification.send()
 
 
+
+
 class Playerlist {
 
-    static get constant1() {
-        return runplaylist(12)
+    constructor(data){
+        this.data = data;
+    }
+
+    constant1() {
+       console.log(this.data);
+       this.data = null;
+
+       //
     }
 
 }
 
+// HTML5
+// WEBGL
+// CSS3
+
+
+// IE6, IE7, IE8
 
 const connection = new CasparCG();
 
 const runplaylist = async (data) => {
     // const playlist = await connection.thumbnailList();
-    const playlist = await data;
-    for (const entry of playlist.response.data) {
+    // const playlist = await data;
+    for (const entry of data) {
         try {
             console.log('--- GROJAM ', entry.name);
 
