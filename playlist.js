@@ -1,4 +1,3 @@
-
 const {CasparCG} = require("casparcg-connection");
 const Decimal = require('decimal.js');
 const notifier = require('node-notifier');
@@ -6,33 +5,30 @@ const notifier = require('node-notifier');
 
 // Notification.send()
 
-
 const connection = new CasparCG();
+const notification = new Notification();
 
-class  VideoQuery{
 
-    constructor(data) {
-        this.data = data;
-    }
+class VideoQuery {
 
     async runplaylist(data) {
-        const playlist = data;
-        for (const entry of playlist) {
+        for (const entry of data) {
             try {
                 console.log('--- GROJAM ', entry.name);
-
+                notification.notification(`${entry.name} pradeda groti`, entry.name);
                 await connection.play(1, 1, entry.name);
-                await playplay(entry);
+                await this.countframe(entry);
 
             } catch (err) {
                 console.log(err);
             }
+
         }
         console.log("Pabaiga");
         await connection.disconnect();
     }
 
-    async play() {
+    async countframe(entry) {
 
         console.log('-- ISKVIECIAM');
         await new Promise(resolve => setTimeout(resolve, 400));
@@ -41,13 +37,13 @@ class  VideoQuery{
 
         if (!('layer' in videotime)) {
             console.log("nera");
-            await playplay(entry);
+            await this.countframe(entry);
             return;
         }
 
         if (videotime.layer.layer_1.foreground.file.time[0] === '0') {
             console.log("nera, 0 == 0");
-            await playplay(entry);
+            await this.countframe(entry);
             return;
         }
 
@@ -64,8 +60,8 @@ class  VideoQuery{
                     console.log("lygu");
                     console.log("isgrojo" + entry.name);
                     clearInterval(intervalId);
-                 //todo insert notification class
-                    //perdeti notifikasion i nauja clase
+                    notification.notification(`${entry.name} pabaigė groti!`, entry.name);
+                    //todo perdeti notifikasion i nauja clase
                     resolve();
                 }
             });
@@ -84,15 +80,10 @@ class  VideoQuery{
 
 class Notification {
 
-    constructor(title, name){
-        this.title = title;
-        this.name = name;
-    }
-
-    notification(){
+    notification(title, name) {
         notifier.notify({
-            title: this.title,
-            message: this.name
+            title: title,
+            message: name
         });
     }
 

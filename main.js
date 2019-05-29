@@ -32,15 +32,14 @@ function createWindow() {
     });
 
 
-    const testplay = new Playout();
-
+    const play = new Playout();
 
 
     ipcMain.on('playout', (event, data) => {
         /* data = [ { name: '...' }, { name: '.....', }]
          */
 
-        testplay.runplaylist();
+        play.runplaylist(data);
         // new DataClass(data)
         // new TestClass(data)
 
