@@ -1,8 +1,6 @@
 const electron = require('electron');
-const {app, BrowserWindow, Notification, ipcMain } = require('electron');
+const {app, BrowserWindow, Notification, ipcMain} = require('electron');
 const Playout = require('./playlist.js');
-
-
 
 
 let win;
@@ -34,20 +32,21 @@ function createWindow() {
     });
 
 
-    Playout();
-    // const playout = new Playout();
-    //
+    const testplay = new Playout();
+
+
+
     ipcMain.on('playout', (event, data) => {
         /* data = [ { name: '...' }, { name: '.....', }]
          */
-        console.log(data);
 
+        testplay.runplaylist();
         // new DataClass(data)
         // new TestClass(data)
 
         // new TAVO_SUGALVOTA_KLASE(data);
         // this.data = data;
-       // playout.run(JSON.parse(data));
+        // playout.run(JSON.parse(data));
     });
 }
 
