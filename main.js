@@ -34,12 +34,25 @@ function createWindow() {
 
     const play = new Playout();
 
+
+    ipcMain.on('get-all-available-videos', event => {
+        // play.kazkoks_metodas_kuris_grazina_irasus
+
+        // win.webContents.send('all-available-videos', X);
+    });
+
     ipcMain.on('playout', (event, data) => {
         /* data = [ { name: '...' }, { name: '.....', }]
          */
 
+        // console.log(typeof data);
 
-        play.runplaylist(JSON.parse(data));
+        try {
+            play.runplaylist(JSON.parse(data));
+        } catch (err) {
+            console.log(err);
+        }
+
         // new DataClass(data)
         // new TestClass(data)
 

@@ -8,23 +8,24 @@ const notifier = require('node-notifier');
 const connection = new CasparCG();
 
 
+//@TODO: perkelti i nauja faila
 class Notification {
-
-    constructor(title, name) {
-        this.title = title;
-        this.name = name
-    }
-
-    notification() {
+    notification(title, message) {
         notifier.notify({
-            title: this.title,
-            message: this.name
+            title,
+            message
         });
     }
-
 }
 
-class VideoQuery {
+
+// Playlist > run
+// VideoQueue > runplaylist
+
+// run_playlist _ _
+// runPlaylist
+
+class VideoQueue {
 
     async runplaylist(data) {
         for (const entry of data) {
@@ -43,11 +44,11 @@ class VideoQuery {
     }
 
     async countframe(entry) {
-        const notific = new Notification(`${entry.name} Pradėjo groti`, entry.name);
-        notific.notification();
+        const notificbegin = new Notification();
+        notificbegin.notification(`${entry.name} Pradėjo groti`, entry.name);
 
         console.log('-- ISKVIECIAM');
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 200));
 
         const videoinfo = await connection.info(1, 1);
         const videotime = videoinfo.response.data.stage;
@@ -77,8 +78,8 @@ class VideoQuery {
                     console.log("lygu");
                     console.log("isgrojo" + entry.name);
                     clearInterval(intervalId);
-                    const notific = new Notification(`${entry.name} Baigė groti`, entry.name);
-                    notific.notification();
+                    const notificend = new Notification();
+                    notificend.notification(`${entry.name} Baigė groti`, entry.name);
                     resolve();
                 }
             });
@@ -94,7 +95,7 @@ class VideoQuery {
 
 }
 
-module.exports = VideoQuery;
+module.exports = VideoQueue;
 
 
 
