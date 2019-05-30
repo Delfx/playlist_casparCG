@@ -6,8 +6,23 @@ const notifier = require('node-notifier');
 // Notification.send()
 
 const connection = new CasparCG();
-const notification = new Notification();
 
+
+class Notification {
+
+    constructor(title, name) {
+        this.title = title;
+        this.name = name
+    }
+
+    notification() {
+        notifier.notify({
+            title: this.title,
+            message: this.name
+        });
+    }
+
+}
 
 class VideoQuery {
 
@@ -15,7 +30,6 @@ class VideoQuery {
         for (const entry of data) {
             try {
                 console.log('--- GROJAM ', entry.name);
-                notification.notification(`${entry.name} pradeda groti`, entry.name);
                 await connection.play(1, 1, entry.name);
                 await this.countframe(entry);
 
@@ -29,9 +43,12 @@ class VideoQuery {
     }
 
     async countframe(entry) {
+        const notific = new Notification(`${entry.name} Pradėjo groti`, entry.name);
+        notific.notification();
 
         console.log('-- ISKVIECIAM');
-        await new Promise(resolve => setTimeout(resolve, 400));
+        await new Promise(resolve => setTimeout(resolve, 500));
+
         const videoinfo = await connection.info(1, 1);
         const videotime = videoinfo.response.data.stage;
 
@@ -60,8 +77,8 @@ class VideoQuery {
                     console.log("lygu");
                     console.log("isgrojo" + entry.name);
                     clearInterval(intervalId);
-                    notification.notification(`${entry.name} pabaigė groti!`, entry.name);
-                    //todo perdeti notifikasion i nauja clase
+                    const notific = new Notification(`${entry.name} Baigė groti`, entry.name);
+                    notific.notification();
                     resolve();
                 }
             });
@@ -77,87 +94,6 @@ class VideoQuery {
 
 }
 
-
-class Notification {
-
-    notification(title, name) {
-        notifier.notify({
-            title: title,
-            message: name
-        });
-    }
-
-}
-
-
-// const runplaylist = async () => {
-//     const playlist = await connection.thumbnailList();
-//     for (const entry of playlist.response.data) {
-//         try {
-//             console.log('--- GROJAM ', entry.name);
-//
-//             await connection.play(1, 1, entry.name);
-//             await playplay(entry);
-//
-//         } catch (err) {
-//             console.log(err);
-//         }
-//     }
-//     console.log("Pabaiga");
-//     await connection.disconnect();
-// };
-//
-// const playplay = async entry => {
-//     console.log('-- ISKVIECIAM');
-//
-//     await new Promise(resolve => setTimeout(resolve, 400));
-//     const videoinfo = await connection.info(1, 1);
-//     const videotime = videoinfo.response.data.stage;
-//
-//
-//     if (!('layer' in videotime)) {
-//         console.log("nera");
-//         await playplay(entry);
-//         return;
-//     }
-//
-//     if (videotime.layer.layer_1.foreground.file.time[0] === '0') {
-//         console.log("nera, 0 == 0");
-//         await playplay(entry);
-//         return;
-//     }
-//
-//     await new Promise(async (resolve, reject) => {
-//         const intervalFunction = (async () => {
-//             const videoinfo = await connection.info(1, 1);
-//             const videotime2 = videoinfo.response.data.stage;
-//             const videotimefirst = videotime2.layer.layer_1.foreground.file.time[0];
-//             const videotimelast = videotime2.layer.layer_1.foreground.file.time[1];
-//             console.log(videotimefirst, videotimelast);
-//             const decimalnumber = new Decimal(videotimelast); // pakeisti pavadinima ne i X
-//
-//             if (decimalnumber.equals(new Decimal(videotimefirst))) {
-//                 console.log("lygu");
-//                 console.log("isgrojo" + entry.name);
-//                 clearInterval(intervalId);
-//                 notifier.notify({
-//                     title: `${entry.name} pabaigė groti!`,
-//                     message: entry.name
-//                 });
-//
-//                 //perdeti notifikasion i nauja clase
-//                 resolve();
-//             }
-//         });
-//
-//         const intervalId = setInterval(intervalFunction, 40);
-//         await intervalFunction();
-//     });
-//
-//     await connection.stop(1, 1);
-// };
-
-// module.exports = runplaylist;
 module.exports = VideoQuery;
 
 

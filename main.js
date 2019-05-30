@@ -34,12 +34,12 @@ function createWindow() {
 
     const play = new Playout();
 
-
     ipcMain.on('playout', (event, data) => {
         /* data = [ { name: '...' }, { name: '.....', }]
          */
 
-        play.runplaylist(data);
+
+        play.runplaylist(JSON.parse(data));
         // new DataClass(data)
         // new TestClass(data)
 
