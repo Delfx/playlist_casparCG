@@ -35,11 +35,13 @@ function createWindow() {
     const play = new Playout();
 
 
-    ipcMain.on('get-all-available-videos', event => {
-        // play.kazkoks_metodas_kuris_grazina_irasus
+    // ipcMain.on('get-all-available-videos', event => {
+    //     // play.kazkoks_metodas_kuris_grazina_irasus
+    //     win.webContents.send('all-available-videos', play.getAllvideolist().then(function (result) {
+    //         JSON.stringify(result.response.data);
+    //     }));
+    // });
 
-        // win.webContents.send('all-available-videos', X);
-    });
 
     ipcMain.on('playout', (event, data) => {
         /* data = [ { name: '...' }, { name: '.....', }]
@@ -48,7 +50,7 @@ function createWindow() {
         // console.log(typeof data);
 
         try {
-            play.runplaylist(JSON.parse(data));
+            play.runPlaylist(JSON.parse(data));
         } catch (err) {
             console.log(err);
         }

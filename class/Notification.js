@@ -1,8 +1,6 @@
 const notifier = require('node-notifier');
 
-
-
-class Notification2 {
+class Notification {
     notification(title, name) {
         notifier.notify({
             title: title,
@@ -11,9 +9,4 @@ class Notification2 {
     }
 }
 
-
-
-const noti = new Notification2();
-
-noti.notification("test", "test");
-
+module.exports = Notification;

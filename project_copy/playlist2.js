@@ -1,5 +1,5 @@
-const {CasparCG} = require("casparcg-connection");
-const Decimal = require('decimal.js');
+const {CasparCG} = require("casparcg-connection/dist/index");
+const Decimal = require('decimal.js/decimal.js');
 const notifier = require('node-notifier');
 // notification.js
 

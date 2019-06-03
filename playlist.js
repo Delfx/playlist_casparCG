@@ -1,23 +1,9 @@
 const {CasparCG} = require("casparcg-connection");
 const Decimal = require('decimal.js');
-const notifier = require('node-notifier');
-// notification.js
+const Notifier = require('./class/Notification.js');
 
-// Notification.send()
 
 const connection = new CasparCG();
-
-
-//@TODO: perkelti i nauja faila
-class Notification {
-    notification(title, message) {
-        notifier.notify({
-            title,
-            message
-        });
-    }
-}
-
 
 // Playlist > run
 // VideoQueue > runplaylist
@@ -27,7 +13,12 @@ class Notification {
 
 class VideoQueue {
 
-    async runplaylist(data) {
+   async getAllvideolist() {
+        const playlist = await connection.thumbnailList();
+        return playlist.response.data;
+    }
+
+    async runPlaylist(data) {
         for (const entry of data) {
             try {
                 console.log('--- GROJAM ', entry.name);
@@ -44,7 +35,7 @@ class VideoQueue {
     }
 
     async countframe(entry) {
-        const notificbegin = new Notification();
+        const notificbegin = new Notifier();
         notificbegin.notification(`${entry.name} Pradėjo groti`, entry.name);
 
         console.log('-- ISKVIECIAM');
@@ -78,7 +69,7 @@ class VideoQueue {
                     console.log("lygu");
                     console.log("isgrojo" + entry.name);
                     clearInterval(intervalId);
-                    const notificend = new Notification();
+                    const notificend = new Notifier();
                     notificend.notification(`${entry.name} Baigė groti`, entry.name);
                     resolve();
                 }

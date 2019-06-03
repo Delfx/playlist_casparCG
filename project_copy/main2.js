@@ -1,5 +1,5 @@
-const electron = require('electron');
-const {app, BrowserWindow, Notification} = require('electron');
+const electron = require('electron/electron');
+const {app, BrowserWindow, Notification} = require('electron/electron');
 const notifier = require('node-notifier');
 
 
