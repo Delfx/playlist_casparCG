@@ -32,7 +32,22 @@ function createWindow() {
     });
 
 
+    // NodeJS
+
+
     const play = new Playout();
+
+    // ipcRender.send('get-all-available-videos');
+
+
+    ipcMain.on('get-all-available-videos', async event => {
+        const queue = new Playout();
+
+        const getall = await queue.getAllvideolist();
+
+        event.reply('all-available-videos', JSON.stringify(getall));
+        // win.webContents.send('all-available-videos', JSON.stringify(getall));
+    });
 
 
     // ipcMain.on('get-all-available-videos', event => {
@@ -41,6 +56,8 @@ function createWindow() {
     //         JSON.stringify(result.response.data);
     //     }));
     // });
+
+
 
 
     ipcMain.on('playout', (event, data) => {

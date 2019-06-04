@@ -30,14 +30,18 @@ class VideoQueue {
 
 }
 
+(async () => {
+    const queue = new VideoQueue();
 
-const getall = new VideoQueue().getAllvideolist();
+    const getall = await queue.getAllvideolist();
 
+    ipcMain.send('KANALO-PAVADINIMAS', JSON.stringify(getall));
+})();
 
 
 
 getall.then(function (result) {
-    result;
+    ipcMain.send('KANALO-PAVADINIMAS', JSON.stringify(result));
 });
 
 const tet = new Promise(async (resolve, reject) => {

@@ -19,6 +19,7 @@ class VideoQueue {
     }
 
     async runPlaylist(data) {
+        // data isn't iterable
         for (const entry of data) {
             try {
                 console.log('--- GROJAM ', entry.name);
