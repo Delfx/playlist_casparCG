@@ -49,17 +49,6 @@ function createWindow() {
         // win.webContents.send('all-available-videos', JSON.stringify(getall));
     });
 
-
-    // ipcMain.on('get-all-available-videos', event => {
-    //     // play.kazkoks_metodas_kuris_grazina_irasus
-    //     win.webContents.send('all-available-videos', play.getAllvideolist().then(function (result) {
-    //         JSON.stringify(result.response.data);
-    //     }));
-    // });
-
-
-
-
     ipcMain.on('playout', (event, data) => {
         /* data = [ { name: '...' }, { name: '.....', }]
          */
