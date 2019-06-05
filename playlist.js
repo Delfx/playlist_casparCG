@@ -40,10 +40,13 @@ class VideoQueue {
         notificbegin.notification(`${entry.name} Pradėjo groti`, entry.name);
 
         console.log('-- ISKVIECIAM');
+
         await new Promise(resolve => setTimeout(resolve, 200));
 
         const videoinfo = await connection.info(1, 1);
         const videotime = videoinfo.response.data.stage;
+
+        await new Promise(resolve => setTimeout(resolve, 200));
 
         if (!('layer' in videotime)) {
             console.log("nera");
