@@ -1,15 +1,6 @@
 const { ipcRenderer } = require('electron');
 const dataVideo = require('./class/dataVideoAll');
 
-
-
-// JavaScript
-
-
-
-
-
-
 ipcRenderer.send('get-all-available-videos');
 
 ipcRenderer.on('all-available-videos', (event, data) => {
