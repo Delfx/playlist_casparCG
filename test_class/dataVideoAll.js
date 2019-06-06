@@ -1,9 +1,12 @@
+const {ipcRenderer} = require('electron');
 
+
+ipcRenderer.send('get-all-available-videos');
 
 class dataVideoAll {
 
     getAllVideoList(data) {
-
+        ipcRenderer.on('all-available-videos', (event, data) => {
             console.log(data);
             const table = document.getElementById("myTable");
             for (const entry of JSON.parse(data)) {
@@ -13,11 +16,16 @@ class dataVideoAll {
                 cell1.innerHTML = entry.name;
                 cellTwo.innerHTML = entry.size / 1000 + "Mb";
             }
+        });
     }
 }
 
 
-module.exports = dataVideoAll;
+const allVideos = new dataVideoAll();
+
+allVideos.getAllVideoList();
+
+
 
 
 
