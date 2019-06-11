@@ -10,8 +10,6 @@ ipcRenderer.on('all-available-videos', (event, data) => {
     // ipcRenderer.send('playout', (data));
     const videoAll = new dataVideo();
     videoAll.getAllVideoList(data);
-    // const showdialog = new dialogBox();
-    // showdialog.showTestBox();
 
 });
 

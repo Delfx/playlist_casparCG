@@ -16,10 +16,42 @@ class dataVideoAll {
         form.addEventListener('submit', this.kitas_metodas);
     }
 
-    deleteButton(elementId, rowId) {
-        const row = document.getElementById(elementId);
-        row.deleteRow(rowId);
+
+    checkbox(cellname) {
+        const checkbox = document.createElement("INPUT");
+        checkbox.setAttribute("type", "checkbox");
+        checkbox.setAttribute("name", "acs");
+        cellname.appendChild(checkbox)
     }
+
+    selectAll() {
+        const createButton = document.createElement("BUTTON");
+        const createButtonText = document.createTextNode("SelectAll");
+        createButton.appendChild(createButtonText);
+        const items = document.getElementsByName('acs');
+        createButton.onclick = function () {
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type === 'checkbox')
+                    items[i].checked = true;
+            }
+        };
+        document.body.appendChild(createButton);
+    }
+
+    UnSelectAll() {
+        const createButton = document.createElement("BUTTON");
+        const createButtonText = document.createTextNode("UnSelectAll");
+        createButton.appendChild(createButtonText);
+        const items = document.getElementsByName('acs');
+        createButton.onclick = function () {
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type === 'checkbox')
+                    items[i].checked = false;
+            }
+        };
+        document.body.appendChild(createButton);
+    }
+
 
     createButton(cellName, idName, rowId) {
         const createButton = document.createElement("BUTTON");
@@ -43,6 +75,7 @@ class dataVideoAll {
             const rowLegth = table.rows.length;
             let row = table.insertRow();
             row.id = rowLegth;
+            const checkbox = row.insertCell();
             const cell1 = row.insertCell();
             const cellTwo = row.insertCell();
             const cellThree = row.insertCell();
@@ -63,7 +96,7 @@ class dataVideoAll {
                 ${dataTime.getHours()}:${dataTime.getMinutes()}`;
 
             this.createButton(cellThree, entry.name, rowLegth);
-
+            this.checkbox(checkbox);
 
             // entry.changed?
 
@@ -73,6 +106,8 @@ class dataVideoAll {
 //ipcRenderered.send('');
 
         }
+        this.selectAll();
+        this.UnSelectAll();
     }
 }
 
