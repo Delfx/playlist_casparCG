@@ -1,6 +1,5 @@
 class dataVideoAll {
     constructor(length) {
-        this.length = length
         // iskviesti kazkoki metoda kuris prisirs prie tavo mygtuko
         // this.kazkoks_metodas();
     }
@@ -11,7 +10,7 @@ class dataVideoAll {
     }
 
     kazoks_metodas() {
-        const form = document.getElementById('kitas_id');
+        const form = document.getElementById('myTable');
 
         form.addEventListener('submit', this.kitas_metodas);
     }
@@ -22,6 +21,16 @@ class dataVideoAll {
         checkbox.setAttribute("type", "checkbox");
         checkbox.setAttribute("name", "acs");
         cellname.appendChild(checkbox)
+    }
+
+    submitButton(){
+        const createButton = document.createElement("input");
+        createButton.setAttribute("type", "submit");
+        createButton.setAttribute("value", "Submit");
+        createButton.onclick  = () => {
+            document.getElementById("myForm").submit();
+        };
+        document.body.appendChild(createButton);
     }
 
     selectAll() {
@@ -108,6 +117,7 @@ class dataVideoAll {
         }
         this.selectAll();
         this.UnSelectAll();
+        this.submitButton();
     }
 }
 

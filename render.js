@@ -1,4 +1,4 @@
-const {ipcRenderer} = require('electron');
+const {ipcRenderer, dialog} = require('electron');
 const dataVideo = require('./class/dataVideoAll');
 const dialogBox = require('./test_class/showmessage');
 
@@ -12,6 +12,7 @@ ipcRenderer.on('all-available-videos', (event, data) => {
     videoAll.getAllVideoList(data);
 
 });
+
 
 
 

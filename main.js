@@ -1,5 +1,5 @@
 const electron = require('electron');
-const {app, BrowserWindow, Notification, ipcMain} = require('electron');
+const {app, BrowserWindow, Notification, ipcMain, dialog} = require('electron');
 const Playout = require('./playlist.js');
 
 
@@ -30,11 +30,7 @@ function createWindow() {
         // when you should delete the corresponding element.
         win = null
     });
-
-
     // NodeJS
-
-
     const play = new Playout();
 
     ipcMain.on('get-all-available-videos', async event => {
@@ -52,9 +48,21 @@ function createWindow() {
         } catch (err) {
             console.log(err);
         }
-
     });
+
+// dialogbox
+
+    // let options = {
+    //     buttons: ["Yes", "No", "Cancel"],
+    //     message: "Do you really want to quit?"
+    // };
+    //
+    // let response = dialog.showMessageBox(options);
+    // console.log(response);
+
+    // dialog.showOpenDialog({ properties: ['openFile'] });
 }
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
