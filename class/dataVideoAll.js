@@ -1,3 +1,8 @@
+const {dialog} = require('electron').remote;
+const {ipcRenderer} = require('electron');
+
+
+
 class dataVideoAll {
     constructor(length) {
         // iskviesti kazkoki metoda kuris prisirs prie tavo mygtuko
@@ -16,19 +21,20 @@ class dataVideoAll {
     }
 
 
-    checkbox(cellname) {
+    checkbox(cellname, entryname) {
         const checkbox = document.createElement("INPUT");
         checkbox.setAttribute("type", "checkbox");
         checkbox.setAttribute("name", "acs");
+        checkbox.dataset.name = entryname;
         cellname.appendChild(checkbox)
     }
 
-    submitButton(){
+    submitButton() {
         const createButton = document.createElement("input");
         createButton.setAttribute("type", "submit");
         createButton.setAttribute("value", "Submit");
-        createButton.onclick  = () => {
-            document.getElementById("myForm").submit();
+        createButton.onclick = () => {
+            this.selectedItem();
         };
         document.body.appendChild(createButton);
     }
@@ -40,21 +46,33 @@ class dataVideoAll {
         const items = document.getElementsByName('acs');
         createButton.onclick = function () {
             for (let i = 0; i < items.length; i++) {
-                if (items[i].type === 'checkbox')
                     items[i].checked = true;
             }
         };
         document.body.appendChild(createButton);
     }
 
+    selectedItem() {
+        const allItem = [];
+        const items = document.getElementsByName('acs');
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].checked){
+                allItem.push({name : items[i].dataset.name});
+            }
+        }
+        ipcRenderer.send('playout', JSON.stringify(allItem));
+        console.log(allItem);
+    }
+
+
     UnSelectAll() {
         const createButton = document.createElement("BUTTON");
         const createButtonText = document.createTextNode("UnSelectAll");
         createButton.appendChild(createButtonText);
         const items = document.getElementsByName('acs');
+        //TODO change to addeventlistener
         createButton.onclick = function () {
             for (let i = 0; i < items.length; i++) {
-                if (items[i].type === 'checkbox')
                     items[i].checked = false;
             }
         };
@@ -68,9 +86,20 @@ class dataVideoAll {
         createButton.appendChild(createButtonText);
         createButton.setAttribute("id", idName);
         // createButton.setAttribute("onclick", onlickName);
-        createButton.onclick = function () {
-            document.getElementById(rowId).remove();
-        };
+        createButton.addEventListener('click', function (event) {
+            event.preventDefault();
+            let options = {
+                buttons: ["Yes", "No"],
+                message: "Do you really want to delete?"
+            };
+
+            dialog.showMessageBox(options, function (response) {
+                if (response === 0) {
+                    document.querySelector(`[data-id="${rowId}"]`).remove();
+                }
+                console.log(response);
+            });
+        }, false);
         cellName.appendChild(createButton);
 
 
@@ -78,12 +107,12 @@ class dataVideoAll {
 
 
     getAllVideoList(data) {
-        console.log(data);
+        // console.log(data);
         const table = document.getElementById("myTable");
         for (const entry of JSON.parse(data)) {
             const rowLegth = table.rows.length;
             let row = table.insertRow();
-            row.id = rowLegth;
+            row.dataset.id = rowLegth;
             const checkbox = row.insertCell();
             const cell1 = row.insertCell();
             const cellTwo = row.insertCell();
@@ -105,13 +134,12 @@ class dataVideoAll {
                 ${dataTime.getHours()}:${dataTime.getMinutes()}`;
 
             this.createButton(cellThree, entry.name, rowLegth);
-            this.checkbox(checkbox);
+            this.checkbox(checkbox, entry.name);
 
             // entry.changed?
 
-//TODO: create new field with button to delete entry with dialog box;
-//TODO: create checkbox with two button check all, uncheck all;
-//TODO: submit button to play chucked video;
+//TODO submit button wait after video
+//TODO add form change name to input
 //ipcRenderered.send('');
 
         }

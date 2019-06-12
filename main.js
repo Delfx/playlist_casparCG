@@ -52,13 +52,7 @@ function createWindow() {
 
 // dialogbox
 
-    // let options = {
-    //     buttons: ["Yes", "No", "Cancel"],
-    //     message: "Do you really want to quit?"
-    // };
-    //
-    // let response = dialog.showMessageBox(options);
-    // console.log(response);
+
 
     // dialog.showOpenDialog({ properties: ['openFile'] });
 }
