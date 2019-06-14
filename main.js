@@ -1,6 +1,6 @@
 const electron = require('electron');
 const {app, BrowserWindow, Notification, ipcMain, dialog} = require('electron');
-const Playout = require('./playlist.js');
+const Playlist = require('./playlist.js');
 
 
 let win;
@@ -31,27 +31,28 @@ function createWindow() {
         win = null
     });
     // NodeJS
-    const play = new Playout();
+    const play = new Playlist();
 
     ipcMain.on('get-all-available-videos', async event => {
-        const queue = new Playout();
+        const queue = new Playlist();
 
         const getall = await queue.getAllvideolist();
 
+
         event.reply('all-available-videos', JSON.stringify(getall));
-        // win.webContents.send('all-available-videos', JSON.stringify(getall));
     });
 
-    ipcMain.on('playout', (event, data) => {
+    ipcMain.on('playout', async (event, data) => {
         try {
             play.runPlaylist(JSON.parse(data));
+            const gettime = await play.clipended();
+            event.reply('get-ending-data', gettime);
         } catch (err) {
             console.log(err);
         }
     });
 
 // dialogbox
-
 
 
     // dialog.showOpenDialog({ properties: ['openFile'] });

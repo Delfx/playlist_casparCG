@@ -13,7 +13,7 @@ const connection = new CasparCG();
 
 class VideoQueue {
 
-   async getAllvideolist() {
+    async getAllvideolist() {
         const playlist = await connection.thumbnailList();
         return playlist.response.data;
     }
@@ -26,13 +26,26 @@ class VideoQueue {
                 await connection.play(1, 1, entry.name);
                 await this.countframe(entry);
 
-            } catch (err) {
+            }
+
+            catch (err) {
                 console.log(err);
             }
 
         }
         console.log("Pabaiga");
-        await connection.disconnect();
+        // return "pabaiga";
+        // await connection.clear(1,1);
+        // await connection.disconnect();
+    }
+
+    async clipended() {
+        const videoinfo = await connection.info(1, 1);
+        const videotime2 = videoinfo.response.data.stage;
+        // const videotimefirst = videotime2.layer.layer_1.foreground.file.time[0];
+        const videotimelast = videotime2.layer.layer_1.foreground.file.time[1];
+        return  videotimelast;
+
     }
 
     async countframe(entry) {

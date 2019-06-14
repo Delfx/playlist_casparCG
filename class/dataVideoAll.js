@@ -2,7 +2,6 @@ const {dialog} = require('electron').remote;
 const {ipcRenderer} = require('electron');
 
 
-
 class dataVideoAll {
     constructor(length) {
         // iskviesti kazkoki metoda kuris prisirs prie tavo mygtuko
@@ -12,6 +11,10 @@ class dataVideoAll {
     kitas_metodas(evt) {
         evt.preventDefault();
 
+    }
+
+    getending(data) {
+        // console.log(data);
     }
 
     kazoks_metodas() {
@@ -46,7 +49,7 @@ class dataVideoAll {
         const items = document.getElementsByName('acs');
         createButton.onclick = function () {
             for (let i = 0; i < items.length; i++) {
-                    items[i].checked = true;
+                items[i].checked = true;
             }
         };
         document.body.appendChild(createButton);
@@ -56,8 +59,8 @@ class dataVideoAll {
         const allItem = [];
         const items = document.getElementsByName('acs');
         for (let i = 0; i < items.length; i++) {
-            if (items[i].checked){
-                allItem.push({name : items[i].dataset.name});
+            if (items[i].checked) {
+                allItem.push({name: items[i].dataset.name});
             }
         }
         ipcRenderer.send('playout', JSON.stringify(allItem));
@@ -73,7 +76,7 @@ class dataVideoAll {
         //TODO change to addeventlistener
         createButton.onclick = function () {
             for (let i = 0; i < items.length; i++) {
-                    items[i].checked = false;
+                items[i].checked = false;
             }
         };
         document.body.appendChild(createButton);
@@ -118,8 +121,39 @@ class dataVideoAll {
             const cellTwo = row.insertCell();
             const cellThree = row.insertCell();
 
-            const strongElement = document.createElement("strong"); // <strong></strong>
-            const strongValue = document.createTextNode(entry.name);
+            let strongElement = document.createElement("strong"); // <strong><input></></strong>
+            let strongValue = document.createTextNode(entry.name);
+            strongElement.dataset.name = rowLegth;
+
+            //TODO Changetada; evet.target or queryselect:
+
+            const onClickListener = function (event) {
+                const inputField = document.createElement("input");
+                inputField.value = entry.name;
+                inputField.setAttribute("type", "text");
+                console.log(strongElement.parentNode);
+                console.log(strongElement);
+                console.log(event.target);
+                console.log(event.target.parentNode);
+                inputField.dataset.name = event.target.dataset.name;
+                event.target.parentNode.replaceChild(inputField, event.target);
+                inputField.addEventListener("blur", function (event) {
+                    const parentNode = event.target.parentNode;
+                    const inputField = parentNode.querySelector("input");
+                    const strongElement = document.createElement("strong");
+                    const strongValue = document.createTextNode(inputField.value);
+                    strongElement.dataset.name = inputField.dataset.name;
+                    strongElement.appendChild(strongValue);
+                    parentNode.replaceChild(strongElement, inputField);
+                    strongElement.addEventListener("click", onClickListener, true);
+                }, true);
+                inputField.focus();
+            };
+            strongElement.addEventListener("click", onClickListener, true);
+
+
+
+
 
             strongElement.appendChild(strongValue);
             cell1.appendChild(strongElement); // <td><strong></strong></td>
@@ -136,6 +170,11 @@ class dataVideoAll {
             this.createButton(cellThree, entry.name, rowLegth);
             this.checkbox(checkbox, entry.name);
 
+            cellTwo.addEventListener("click", function () {
+                const selectDate = document.querySelectorAll("table td:nth-of-type(3)");;
+                console.log(selectDate);
+            });
+
             // entry.changed?
 
 //TODO submit button wait after video
@@ -146,6 +185,7 @@ class dataVideoAll {
         this.selectAll();
         this.UnSelectAll();
         this.submitButton();
+        // this.getending();
     }
 }
 

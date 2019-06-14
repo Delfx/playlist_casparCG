@@ -1,20 +1,26 @@
 const {ipcRenderer} = require('electron');
-const dataVideo = require('./class/dataVideoAll');
-const dialogBox = require('./test_class/showmessage');
+const dataVideoAll = require('./class/dataVideoAll');
+
 
 ipcRenderer.send('get-all-available-videos');
 
 ipcRenderer.on('all-available-videos', (event, data) => {
-    // const videos = JSON.parse(data);
-
     // setTimeout(function () {
     //     ipcRenderer.send('playout', (data));
     // }, 60000);
     // console.log(JSON.parse(data));
-    const videoAll = new dataVideo();
+    const videoAll = new dataVideoAll();
     videoAll.getAllVideoList(data);
-
 });
+
+
+
+ipcRenderer.on('get-ending-data', (event, data) =>{
+    const videotime = new dataVideoAll();
+    videotime.getending(data);
+});
+
+
 
 
 
