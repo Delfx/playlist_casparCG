@@ -170,8 +170,8 @@ class dataVideoAll {
             this.createButton(cellThree, entry.name, rowLegth);
             this.checkbox(checkbox, entry.name);
 
-            cellTwo.addEventListener("click", function () {
-                const selectDate = document.querySelectorAll("table td:nth-of-type(3)");;
+            cellTwo.addEventListener("click", function (event) {
+                const selectDate = event.type;
                 console.log(selectDate);
             });
 
