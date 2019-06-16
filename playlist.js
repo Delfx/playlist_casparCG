@@ -26,9 +26,7 @@ class VideoQueue {
                 await connection.play(1, 1, entry.name);
                 await this.countframe(entry);
 
-            }
-
-            catch (err) {
+            } catch (err) {
                 console.log(err);
             }
 
@@ -44,7 +42,7 @@ class VideoQueue {
         const videotime2 = videoinfo.response.data.stage;
         // const videotimefirst = videotime2.layer.layer_1.foreground.file.time[0];
         const videotimelast = videotime2.layer.layer_1.foreground.file.time[1];
-        return  videotimelast;
+        return videotimelast;
 
     }
 
@@ -72,6 +70,7 @@ class VideoQueue {
             await this.countframe(entry);
             return;
         }
+
 
         await new Promise(async (resolve, reject) => {
             const intervalFunction = (async () => {

@@ -8,21 +8,9 @@ class dataVideoAll {
         // this.kazkoks_metodas();
     }
 
-    kitas_metodas(evt) {
-        evt.preventDefault();
-
-    }
-
     getending(data) {
         // console.log(data);
     }
-
-    kazoks_metodas() {
-        const form = document.getElementById('myTable');
-
-        form.addEventListener('submit', this.kitas_metodas);
-    }
-
 
     checkbox(cellname, entryname) {
         const checkbox = document.createElement("INPUT");
@@ -30,16 +18,6 @@ class dataVideoAll {
         checkbox.setAttribute("name", "acs");
         checkbox.dataset.name = entryname;
         cellname.appendChild(checkbox)
-    }
-
-    submitButton() {
-        const createButton = document.createElement("input");
-        createButton.setAttribute("type", "submit");
-        createButton.setAttribute("value", "Submit");
-        createButton.onclick = () => {
-            this.selectedItem();
-        };
-        document.body.appendChild(createButton);
     }
 
     selectAll() {
@@ -55,7 +33,17 @@ class dataVideoAll {
         document.body.appendChild(createButton);
     }
 
-    selectedItem() {
+    submitButton() {
+        const createButton = document.createElement("input");
+        createButton.setAttribute("type", "submit");
+        createButton.id = "submitbutton";
+        createButton.onclick = () => {
+            this.submitItem();
+        };
+        document.body.appendChild(createButton);
+    }
+
+    async submitItem() {
         const allItem = [];
         const items = document.getElementsByName('acs');
         for (let i = 0; i < items.length; i++) {
@@ -64,9 +52,14 @@ class dataVideoAll {
             }
         }
         ipcRenderer.send('playout', JSON.stringify(allItem));
-        console.log(allItem);
-    }
+        document.getElementById("submitbutton").disabled = true;
+        setTimeout(myFunction, 3000);
+        function myFunction() {
+            console.log("labas");
+            document.getElementById("submitbutton").disabled = false;
+        }
 
+    }
 
     UnSelectAll() {
         const createButton = document.createElement("BUTTON");
@@ -81,7 +74,6 @@ class dataVideoAll {
         };
         document.body.appendChild(createButton);
     }
-
 
     createButton(cellName, idName, rowId) {
         const createButton = document.createElement("BUTTON");
@@ -104,7 +96,6 @@ class dataVideoAll {
             });
         }, false);
         cellName.appendChild(createButton);
-
 
     }
 
@@ -131,10 +122,6 @@ class dataVideoAll {
                 const inputField = document.createElement("input");
                 inputField.value = entry.name;
                 inputField.setAttribute("type", "text");
-                console.log(strongElement.parentNode);
-                console.log(strongElement);
-                console.log(event.target);
-                console.log(event.target.parentNode);
                 inputField.dataset.name = event.target.dataset.name;
                 event.target.parentNode.replaceChild(inputField, event.target);
                 inputField.addEventListener("blur", function (event) {
@@ -150,11 +137,6 @@ class dataVideoAll {
                 inputField.focus();
             };
             strongElement.addEventListener("click", onClickListener, true);
-
-
-
-
-
             strongElement.appendChild(strongValue);
             cell1.appendChild(strongElement); // <td><strong></strong></td>
 
@@ -164,28 +146,36 @@ class dataVideoAll {
                 timeMonth = `0${timeMonth}`;
             }
 
-            cellTwo.textContent = `${dataTime.getFullYear()}-${timeMonth}-${dataTime.getDate()}  
-                ${dataTime.getHours()}:${dataTime.getMinutes()}`;
+            const rawTextData = `${dataTime.getFullYear()}-${timeMonth}-${dataTime.getDate()} ${dataTime.getHours()}:${dataTime.getMinutes()}`;
+            const textdate = document.createTextNode(rawTextData);
+
+            const onClickChangeDate = function (event) {
+                const getDate = event.target;
+                const inputField = document.createElement("input");
+                inputField.setAttribute("type", "text");
+                inputField.setAttribute("value", rawTextData);
+                getDate.parentNode.replaceChild(inputField, getDate);
+                inputField.addEventListener("blur", function (event) {
+                    const getInput = event.target;
+                    const createElement = document.createElement("td");
+                    const createValue = document.createTextNode(inputField.value);
+                    createElement.appendChild(createValue);
+                    getInput.parentNode.replaceChild(createElement, getInput);
+                    createElement.addEventListener("click", onClickChangeDate, true);
+                }, true);
+                inputField.focus();
+            };
+            cellTwo.addEventListener("click", onClickChangeDate, true);
+            cellTwo.appendChild(textdate);
 
             this.createButton(cellThree, entry.name, rowLegth);
             this.checkbox(checkbox, entry.name);
 
-            cellTwo.addEventListener("click", function (event) {
-                const selectDate = event.type;
-                console.log(selectDate);
-            });
-
-            // entry.changed?
-
 //TODO submit button wait after video
-//TODO add form change name to input
-//ipcRenderered.send('');
-
         }
         this.selectAll();
         this.UnSelectAll();
         this.submitButton();
-        // this.getending();
     }
 }
 
