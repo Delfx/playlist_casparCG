@@ -53,13 +53,8 @@ class dataVideoAll {
         }
         ipcRenderer.send('playout', JSON.stringify(allItem));
         document.getElementById("submitbutton").disabled = true;
-        setTimeout(myFunction, 3000);
-        function myFunction() {
-            console.log("labas");
-            document.getElementById("submitbutton").disabled = false;
-        }
-
     }
+
 
     UnSelectAll() {
         const createButton = document.createElement("BUTTON");
@@ -146,22 +141,31 @@ class dataVideoAll {
                 timeMonth = `0${timeMonth}`;
             }
 
+            row.dataset.date = dataTime.toISOString();
+
             const rawTextData = `${dataTime.getFullYear()}-${timeMonth}-${dataTime.getDate()} ${dataTime.getHours()}:${dataTime.getMinutes()}`;
             const textdate = document.createTextNode(rawTextData);
             cellTwo.appendChild(textdate);
-
+//TODO https://momentjs.com/ include.;
+//TODO Save selected to file and load to file;
+//
             const onClickChangeDate = function (event) {
                 const getDate = event.target;
+                const createElement = document.createElement("td");
+                createElement.addEventListener("click", onClickChangeDate, true);
                 const inputField = document.createElement("input");
-                inputField.setAttribute("type", "text");
-                inputField.setAttribute("value", rawTextData);
-                getDate.parentNode.replaceChild(inputField, getDate);
+                inputField.setAttribute("type", "datetime-local");
+                inputField.setAttribute("value", getDate.parentNode.dataset.date);
+                console.log(getDate);
+                createElement.appendChild(inputField);
+                getDate.parentNode.replaceChild(createElement, getDate);
                 inputField.addEventListener("blur", function (event) {
                     const getInput = event.target;
                     const createElement = document.createElement("td");
+                    createElement.dataset.date = inputField.value;
                     const createValue = document.createTextNode(inputField.value);
                     createElement.appendChild(createValue);
-                    getInput.parentNode.replaceChild(createElement, getInput);
+                    getInput.parentNode.replaceChild(createValue, getInput);
                     createElement.addEventListener("click", onClickChangeDate, true);
                 }, true);
                 inputField.focus();
@@ -177,12 +181,8 @@ class dataVideoAll {
         this.selectAll();
         this.UnSelectAll();
         this.submitButton();
-        this.getdatatime();
     }
 
-    getdatatime(time){
-        console.log(time)
-    }
 
 }
 

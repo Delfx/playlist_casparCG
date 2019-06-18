@@ -45,7 +45,8 @@ function createWindow() {
 
     ipcMain.on('playout', async (event, data) => {
         try {
-            play.runPlaylist(JSON.parse(data));
+          await play.runPlaylist(JSON.parse(data));
+          event.reply('get-status', 1);
         } catch (err) {
             console.log(err);
         }

@@ -26,7 +26,6 @@ class VideoQueue {
                 console.log('--- GROJAM ', entry.name);
                 await connection.play(1, 1, entry.name);
                 await this.countframe(entry);
-                await this.clipended();
 
             } catch (err) {
                 console.log(err);
@@ -74,7 +73,6 @@ class VideoQueue {
                 const videotimelast = videotime2.layer.layer_1.foreground.file.time[1];
                 console.log(videotimefirst, videotimelast);
                 const decimalnumber = new Decimal(videotimelast); // pakeisti pavadinima ne i X
-                this.clipended();
                 if (decimalnumber.equals(new Decimal(videotimefirst))) {
                     console.log("lygu");
                     console.log("isgrojo" + entry.name);
