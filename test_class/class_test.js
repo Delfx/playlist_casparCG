@@ -1,19 +1,10 @@
-class TestClass {
-    constructor(data) {
-        this.data = data;
-    }
+const moment = require('moment');
 
-    getData() {
-        return this.data;
-    }
-}
+const date = 1559073447000;
+
+const converterDate = moment(date).format("YYYY-MM-DDTHH:mm");
+
+console.log(converterDate);
 
 
-const data = {name: "Tadas", age: 21, sex: "male"};
 
-const testClass = new TestClass(data);
-
-data.age = 22;
-
-console.log(data);
-console.log(testClass.getData());

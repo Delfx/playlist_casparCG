@@ -1,5 +1,6 @@
 const {dialog} = require('electron').remote;
 const {ipcRenderer} = require('electron');
+const moment = require('moment');
 
 
 class dataVideoAll {
@@ -111,7 +112,6 @@ class dataVideoAll {
             let strongValue = document.createTextNode(entry.name);
             strongElement.dataset.name = rowLegth;
 
-            //TODO Changetada; evet.target or queryselect:
 
             const onClickListener = function (event) {
                 const inputField = document.createElement("input");
@@ -121,12 +121,13 @@ class dataVideoAll {
                 event.target.parentNode.replaceChild(inputField, event.target);
                 inputField.addEventListener("blur", function (event) {
                     const parentNode = event.target.parentNode;
-                    const inputField = parentNode.querySelector("input");
+                    const inputField2 = parentNode.querySelector("input");
                     const strongElement = document.createElement("strong");
-                    const strongValue = document.createTextNode(inputField.value);
-                    strongElement.dataset.name = inputField.dataset.name;
+                    const strongValue = document.createTextNode(inputField2.value);
+                    strongElement.dataset.name = inputField2.dataset.name;
+                    entry.name = inputField2.value;
                     strongElement.appendChild(strongValue);
-                    parentNode.replaceChild(strongElement, inputField);
+                    parentNode.replaceChild(strongElement, inputField2);
                     strongElement.addEventListener("click", onClickListener, true);
                 }, true);
                 inputField.focus();
@@ -141,11 +142,15 @@ class dataVideoAll {
                 timeMonth = `0${timeMonth}`;
             }
 
-            row.dataset.date = dataTime.toISOString();
+            const dateConverter = moment(entry.changed).format("YYYY-MM-DDTHH:mm");
+            row.dataset.date = dateConverter;
 
             const rawTextData = `${dataTime.getFullYear()}-${timeMonth}-${dataTime.getDate()} ${dataTime.getHours()}:${dataTime.getMinutes()}`;
             const textdate = document.createTextNode(rawTextData);
             cellTwo.appendChild(textdate);
+
+
+
 //TODO https://momentjs.com/ include.;
 //TODO Save selected to file and load to file;
 //
@@ -163,6 +168,7 @@ class dataVideoAll {
                     const getInput = event.target;
                     const createElement = document.createElement("td");
                     createElement.dataset.date = inputField.value;
+                    row.dataset.date = inputField.value;
                     const createValue = document.createTextNode(inputField.value);
                     createElement.appendChild(createValue);
                     getInput.parentNode.replaceChild(createValue, getInput);
@@ -176,7 +182,6 @@ class dataVideoAll {
             this.createButton(cellThree, entry.name, rowLegth);
             this.checkbox(checkbox, entry.name);
 
-//TODO submit button wait after video
         }
         this.selectAll();
         this.UnSelectAll();
