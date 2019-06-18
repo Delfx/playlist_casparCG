@@ -43,7 +43,7 @@ class dataVideoAll {
         document.body.appendChild(createButton);
     }
 
-    async submitItem() {
+    submitItem() {
         const allItem = [];
         const items = document.getElementsByName('acs');
         for (let i = 0; i < items.length; i++) {
@@ -148,6 +148,7 @@ class dataVideoAll {
 
             const rawTextData = `${dataTime.getFullYear()}-${timeMonth}-${dataTime.getDate()} ${dataTime.getHours()}:${dataTime.getMinutes()}`;
             const textdate = document.createTextNode(rawTextData);
+            cellTwo.appendChild(textdate);
 
             const onClickChangeDate = function (event) {
                 const getDate = event.target;
@@ -166,7 +167,7 @@ class dataVideoAll {
                 inputField.focus();
             };
             cellTwo.addEventListener("click", onClickChangeDate, true);
-            cellTwo.appendChild(textdate);
+
 
             this.createButton(cellThree, entry.name, rowLegth);
             this.checkbox(checkbox, entry.name);
@@ -176,7 +177,13 @@ class dataVideoAll {
         this.selectAll();
         this.UnSelectAll();
         this.submitButton();
+        this.getdatatime();
     }
+
+    getdatatime(time){
+        console.log(time)
+    }
+
 }
 
 module.exports = dataVideoAll;

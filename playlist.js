@@ -13,18 +13,20 @@ const connection = new CasparCG();
 
 class VideoQueue {
 
+
     async getAllvideolist() {
         const playlist = await connection.thumbnailList();
         return playlist.response.data;
     }
 
     async runPlaylist(data) {
-        // data isn't iterable
+
         for (const entry of data) {
             try {
                 console.log('--- GROJAM ', entry.name);
                 await connection.play(1, 1, entry.name);
                 await this.countframe(entry);
+                await this.clipended();
 
             } catch (err) {
                 console.log(err);
@@ -37,14 +39,6 @@ class VideoQueue {
         // await connection.disconnect();
     }
 
-    async clipended() {
-        const videoinfo = await connection.info(1, 1);
-        const videotime2 = videoinfo.response.data.stage;
-        // const videotimefirst = videotime2.layer.layer_1.foreground.file.time[0];
-        const videotimelast = videotime2.layer.layer_1.foreground.file.time[1];
-        return videotimelast;
-
-    }
 
     async countframe(entry) {
         const notificbegin = new Notifier();
@@ -80,7 +74,7 @@ class VideoQueue {
                 const videotimelast = videotime2.layer.layer_1.foreground.file.time[1];
                 console.log(videotimefirst, videotimelast);
                 const decimalnumber = new Decimal(videotimelast); // pakeisti pavadinima ne i X
-
+                this.clipended();
                 if (decimalnumber.equals(new Decimal(videotimefirst))) {
                     console.log("lygu");
                     console.log("isgrojo" + entry.name);
@@ -94,10 +88,18 @@ class VideoQueue {
             const intervalId = setInterval(intervalFunction, 40);
             await intervalFunction();
         });
-
         await connection.stop(1, 1);
 
     }
+
+    async clipended() {
+        const videoinfo = await connection.info(1, 1);
+        const videotime2 = videoinfo.response.data.stage;
+        const videotimelast = videotime2.layer.layer_1.foreground.file.time[1];
+        console.log(videotimelast + "baigesi");
+
+    }
+
 
 
 }

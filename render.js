@@ -13,12 +13,11 @@ ipcRenderer.on('all-available-videos', (event, data) => {
     videoAll.getAllVideoList(data);
 });
 
+// ipcRenderer.on('get-ending-time', (event, data) => {
+//     const videoAll = new dataVideoAll();
+//     videoAll.getdatatime(data);
+// });
 
-
-ipcRenderer.on('get-ending-data', (event, data) =>{
-    const videotime = new dataVideoAll();
-    videotime.getending(data);
-});
 
 
 

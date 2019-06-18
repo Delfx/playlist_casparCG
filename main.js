@@ -37,16 +37,15 @@ function createWindow() {
         const queue = new Playlist();
 
         const getall = await queue.getAllvideolist();
-
+        // const clipEndingTime = await queue.clipended();
 
         event.reply('all-available-videos', JSON.stringify(getall));
+        // event.reply('get-ending-time', JSON.stringify(clipEndingTime));
     });
 
     ipcMain.on('playout', async (event, data) => {
         try {
             play.runPlaylist(JSON.parse(data));
-            const gettime = await play.clipended();
-            event.reply('get-ending-data', gettime);
         } catch (err) {
             console.log(err);
         }
