@@ -168,8 +168,9 @@ class dataVideoAll {
                     const getInput = event.target;
                     const createElement = document.createElement("td");
                     createElement.dataset.date = inputField.value;
+                    // row.dataset.date = inputField.value;
                     row.dataset.date = inputField.value;
-                    const createValue = document.createTextNode(inputField.value);
+                    const createValue = document.createTextNode(moment(inputField.value).format("YYYY-MM-DD HH:mm"));
                     createElement.appendChild(createValue);
                     getInput.parentNode.replaceChild(createValue, getInput);
                     createElement.addEventListener("click", onClickChangeDate, true);
