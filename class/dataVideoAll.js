@@ -5,9 +5,9 @@ const jsonfile = require('jsonfile');
 
 class dataVideoAll {
 
-    constructor(data) {
-        this.data = data;
-    }
+    // constructor(data) {
+    //     this.data = data;
+    // }
 
     getending(data) {
         // console.log(data);
@@ -50,9 +50,11 @@ class dataVideoAll {
         jsonfile.writeFile(file, obj);
     }
 
-    readFile(file2) {
-        file2 = 'D:/Pamokos/!2019/test/data.txt';
-        console.dir(jsonfile.readFileSync(file2))
+    readFile() {
+        const file2 = 'D:\\Pamokos\\!2019\\playlist_casparCG\\savedfile\\test.txt';
+        console.dir(JSON.stringify(jsonfile.readFileSync(file2)));
+        this.getAllVideoList(JSON.stringify(jsonfile.readFileSync(file2)));
+
     }
 
     loadButton() {
@@ -61,6 +63,7 @@ class dataVideoAll {
         createButton.value = "LoadData";
         createButton.onclick = () => {
             this.readFile();
+
         };
         document.body.appendChild(createButton);
     }
@@ -119,10 +122,11 @@ class dataVideoAll {
     }
 
 
-    getAllVideoList() {
-        const fileName = this.data;
+    getAllVideoList(data) {
+        // const fileName = this.data;
+        console.log(data);
         const table = document.getElementById("myTable");
-        for (const entry of JSON.parse(fileName)) {
+        for (const entry of JSON.parse(data)) {
             const rowLegth = table.rows.length;
             let row = table.insertRow();
             row.dataset.id = rowLegth;
