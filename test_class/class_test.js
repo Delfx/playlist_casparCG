@@ -1,10 +1,15 @@
-const moment = require('moment');
+const jsonfile = require('jsonfile');
 
-const date = 1559073447000;
+const file = 'D:/Pamokos/!2019/test/data.txt';
+const obj = { name: 'JP' };
 
-const converterDate = moment(date).format("YYYY-MM-DDTHH:mm");
+jsonfile.writeFile(file, obj, function (err) {
+    if (err) console.error(err)
+});
 
-console.log(converterDate);
 
-
-
+const file2 = 'D:/Pamokos/!2019/test/data.txt';
+jsonfile.readFile(file2, function (err, obj) {
+    if (err) console.error(err);
+    console.dir(obj)
+});

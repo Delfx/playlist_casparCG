@@ -1,7 +1,7 @@
 const {dialog} = require('electron').remote;
 const {ipcRenderer} = require('electron');
 const moment = require('moment');
-
+const jsonfile = require('jsonfile');
 
 class dataVideoAll {
     constructor(length) {
@@ -54,6 +54,12 @@ class dataVideoAll {
         }
         ipcRenderer.send('playout', JSON.stringify(allItem));
         document.getElementById("submitbutton").disabled = true;
+        const file = 'D:/Pamokos/!2019/test/data.txt';
+        const obj = allItem;
+
+        jsonfile.writeFile(file, obj, function (err) {
+            if (err) console.error(err)
+        });
     }
 
 
@@ -168,7 +174,6 @@ class dataVideoAll {
                     const getInput = event.target;
                     const createElement = document.createElement("td");
                     createElement.dataset.date = inputField.value;
-                    // row.dataset.date = inputField.value;
                     row.dataset.date = inputField.value;
                     const createValue = document.createTextNode(moment(inputField.value).format("YYYY-MM-DD HH:mm"));
                     createElement.appendChild(createValue);

@@ -12,6 +12,7 @@
   "dependencies": {
     "casparcg-connection": "^4.7.0",
     "decimal.js": "^10.1.1",
+    "jsonfile": "^5.0.0",
     "moment": "^2.24.0",
     "node-notifier": "^5.4.0",
     "tslib": "^1.9.3"
