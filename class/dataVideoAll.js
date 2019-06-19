@@ -4,9 +4,9 @@ const moment = require('moment');
 const jsonfile = require('jsonfile');
 
 class dataVideoAll {
-    constructor(length) {
-        // iskviesti kazkoki metoda kuris prisirs prie tavo mygtuko
-        // this.kazkoks_metodas();
+
+    constructor(data) {
+        this.data = data;
     }
 
     getending(data) {
@@ -44,6 +44,27 @@ class dataVideoAll {
         document.body.appendChild(createButton);
     }
 
+    saveFile(destination, filename, object) {
+        const file = `${destination}/${filename}`;
+        const obj = object;
+        jsonfile.writeFile(file, obj);
+    }
+
+    readFile(file2) {
+        file2 = 'D:/Pamokos/!2019/test/data.txt';
+        console.dir(jsonfile.readFileSync(file2))
+    }
+
+    loadButton() {
+        const createButton = document.createElement("input");
+        createButton.setAttribute("type", "submit");
+        createButton.value = "LoadData";
+        createButton.onclick = () => {
+            this.readFile();
+        };
+        document.body.appendChild(createButton);
+    }
+
     submitItem() {
         const allItem = [];
         const items = document.getElementsByName('acs');
@@ -54,12 +75,8 @@ class dataVideoAll {
         }
         ipcRenderer.send('playout', JSON.stringify(allItem));
         document.getElementById("submitbutton").disabled = true;
-        const file = 'D:/Pamokos/!2019/test/data.txt';
-        const obj = allItem;
 
-        jsonfile.writeFile(file, obj, function (err) {
-            if (err) console.error(err)
-        });
+        this.saveFile("D:/Pamokos/!2019/playlist_casparCG/savedfile", "test.txt", allItem);
     }
 
 
@@ -102,10 +119,10 @@ class dataVideoAll {
     }
 
 
-    getAllVideoList(data) {
-        // console.log(data);
+    getAllVideoList() {
+        const fileName = this.data;
         const table = document.getElementById("myTable");
-        for (const entry of JSON.parse(data)) {
+        for (const entry of JSON.parse(fileName)) {
             const rowLegth = table.rows.length;
             let row = table.insertRow();
             row.dataset.id = rowLegth;
@@ -155,11 +172,6 @@ class dataVideoAll {
             const textdate = document.createTextNode(rawTextData);
             cellTwo.appendChild(textdate);
 
-
-
-//TODO https://momentjs.com/ include.;
-//TODO Save selected to file and load to file;
-//
             const onClickChangeDate = function (event) {
                 const getDate = event.target;
                 const createElement = document.createElement("td");
@@ -192,15 +204,17 @@ class dataVideoAll {
         this.selectAll();
         this.UnSelectAll();
         this.submitButton();
+        this.loadButton();
     }
 
-
 }
+
 
 module.exports = dataVideoAll;
 
 
-
+//TODO https://momentjs.com/ include.;
+//TODO Save selected to file and load to file;
 
 
 
