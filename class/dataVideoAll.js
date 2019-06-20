@@ -2,6 +2,7 @@ const {dialog} = require('electron').remote;
 const {ipcRenderer} = require('electron');
 const moment = require('moment');
 const jsonfile = require('jsonfile');
+const fsPromises = require('fs').promises;
 
 class dataVideoAll {
 
@@ -44,10 +45,11 @@ class dataVideoAll {
         document.body.appendChild(createButton);
     }
 
-    saveFile(destination, filename, object) {
+
+    async saveFile(destination, filename, object) {
         const file = `${destination}/${filename}`;
         const obj = object;
-        jsonfile.writeFile(file, obj);
+        await fsPromises.writeFile(file, obj);
     }
 
     readFile() {
@@ -79,7 +81,7 @@ class dataVideoAll {
         ipcRenderer.send('playout', JSON.stringify(allItem));
         document.getElementById("submitbutton").disabled = true;
 
-        this.saveFile("D:/Pamokos/!2019/playlist_casparCG/savedfile", "test.txt", allItem);
+        this.saveFile("D:/Pamokos/!2019/playlist_casparCG/savedfile", "test.txt", JSON.stringify(allItem));
     }
 
 
