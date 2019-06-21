@@ -3,6 +3,7 @@ const {ipcRenderer} = require('electron');
 const moment = require('moment');
 const jsonfile = require('jsonfile');
 const fsPromises = require('fs').promises;
+const path = require('path');
 
 class dataVideoAll {
 
@@ -46,14 +47,22 @@ class dataVideoAll {
     }
 
 
-    async saveFile(destination, filename, object) {
-        const file = `${destination}/${filename}`;
-        const obj = object;
-        await fsPromises.writeFile(file, obj);
+    //TODO make catch dialog box
+    async saveFile(destination, filename, data) {
+        const file = path.join(destination, filename);
+
+        try {
+            await fsPromises.writeFile(file, data);
+        } catch (e) {
+            console.log(e);
+        }
     }
 
+    //TODO dialog open and save file
+    //TODO add readfile async node fs
+
     readFile() {
-        const file2 = 'D:\\Pamokos\\!2019\\playlist_casparCG\\savedfile\\test.txt';
+        const file2 = path.join("savedfile", "test.txt");
         console.dir(JSON.stringify(jsonfile.readFileSync(file2)));
         this.getAllVideoList(JSON.stringify(jsonfile.readFileSync(file2)));
 
@@ -64,8 +73,15 @@ class dataVideoAll {
         createButton.setAttribute("type", "submit");
         createButton.value = "LoadData";
         createButton.onclick = () => {
-            this.readFile();
+            const getTable = document.getElementById("myTable");
 
+            // 5 irsai
+
+            for (let i = 0, rowsLength = getTable.rows.length; i < rowsLength; i++) {
+                getTable.deleteRow(-1);
+            }
+
+            this.readFile();
         };
         document.body.appendChild(createButton);
     }
@@ -81,7 +97,7 @@ class dataVideoAll {
         ipcRenderer.send('playout', JSON.stringify(allItem));
         document.getElementById("submitbutton").disabled = true;
 
-        this.saveFile("D:/Pamokos/!2019/playlist_casparCG/savedfile", "test.txt", JSON.stringify(allItem));
+        this.saveFile("savedfile", "test.txt", JSON.stringify(allItem));
     }
 
 
@@ -207,6 +223,10 @@ class dataVideoAll {
             this.checkbox(checkbox, entry.name);
 
         }
+
+    }
+
+    addAllButton(){
         this.selectAll();
         this.UnSelectAll();
         this.submitButton();
@@ -218,9 +238,7 @@ class dataVideoAll {
 
 module.exports = dataVideoAll;
 
-
-//TODO https://momentjs.com/ include.;
-//TODO Save selected to file and load to file;
+//TODO add to file date and time
 
 
 
