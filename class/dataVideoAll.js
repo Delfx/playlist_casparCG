@@ -61,10 +61,16 @@ class dataVideoAll {
     //TODO dialog open and save file
     //TODO add readfile async node fs
 
-    readFile() {
+   async readFile() {
         const file2 = path.join("savedfile", "test.txt");
-        console.dir(JSON.stringify(jsonfile.readFileSync(file2)));
-        this.getAllVideoList(JSON.stringify(jsonfile.readFileSync(file2)));
+       // await fsPromises.readFile('D:/Pamokos/!2019/playlist_casparCG/savedfile/file.txt', 'utf8'
+        try {
+          this.getAllVideoList(await fsPromises.readFile(file2, 'utf8'));
+        }catch (e) {
+            console.log(e);
+        }
+        // console.dir(JSON.stringify(jsonfile.readFileSync(file2)));
+        // this.getAllVideoList(JSON.stringify(jsonfile.readFileSync(file2)));
 
     }
 
@@ -74,10 +80,7 @@ class dataVideoAll {
         createButton.value = "LoadData";
         createButton.onclick = () => {
             const getTable = document.getElementById("myTable");
-
-            // 5 irsai
-
-            for (let i = 0, rowsLength = getTable.rows.length; i < rowsLength; i++) {
+            for (let i = 1, rowsLength = getTable.rows.length; i < rowsLength; i++) {
                 getTable.deleteRow(-1);
             }
 
@@ -141,7 +144,6 @@ class dataVideoAll {
 
 
     getAllVideoList(data) {
-        // const fileName = this.data;
         console.log(data);
         const table = document.getElementById("myTable");
         for (const entry of JSON.parse(data)) {
