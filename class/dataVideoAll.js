@@ -46,37 +46,10 @@ class dataVideoAll {
         document.body.appendChild(createButton);
     }
 
-    testButton() {
-        const createButton = document.createElement("input");
-        createButton.setAttribute("type", "submit");
-        createButton.value = "testbutton";
-        createButton.id = "submitbutton2";
-        createButton.onclick = () => {
-            this.testItem();
-        };
-        document.body.appendChild(createButton);
-    }
-
-
-    testItem() {
-        const allItem = [];
-        const items = document.getElementsByName('acs');
-        const trSelect = document.querySelectorAll('tr');
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].checked) {
-                allItem.push({name: items[i].dataset.name, changed: trSelect[i+1].dataset.date});
-                console.log(trSelect[i+1].dataset.date)
-            }
-        }
-
-        this.saveFile("savedfile", "test.txt", JSON.stringify(allItem));
-    }
-
 
     //TODO make catch dialog box
     async saveFile(destination, filename, data) {
         const file = path.join(destination, filename);
-
         try {
             await fsPromises.writeFile(file, data);
         } catch (e) {
@@ -84,19 +57,34 @@ class dataVideoAll {
         }
     }
 
-    //TODO dialog open and save file
+    //TODO dialog open and save file +
     //TODO add readfile async node fs +
 
-    async readFile() {
-        const file2 = path.join("savedfile", "test.txt");
-        try {
-            this.getAllVideoList(await fsPromises.readFile(file2, 'utf8'));
-        } catch (e) {
-            console.log(e);
-        }
+    readFile() {
+        dialog.showOpenDialog({
+            properties: ['openFile'], filters: [
+                {name: "Text", extensions: ["txt", "json"]}
+            ]
+        }, async (respons) => {
+            try {
+                console.log(respons[0]);
+                this.getAllVideoList(await fsPromises.readFile(respons[0], 'utf8'));
+            } catch (e) {
+                console.log(e);
+            }
+        });
+        // const file2 = path.join("savedfile", "test.txt");
         // console.dir(JSON.stringify(jsonfile.readFileSync(file2)));
         // this.getAllVideoList(JSON.stringify(jsonfile.readFileSync(file2)));
 
+    }
+
+    testItem() {
+        console.log(dialog.showOpenDialog({
+            properties: ['openFile'], filters: [
+                {name: "Text", extensions: ["txt", "json"]}
+            ]
+        }))
     }
 
     loadButton() {
@@ -116,19 +104,37 @@ class dataVideoAll {
     submitItem() {
         const allItem = [];
         const items = document.getElementsByName('acs');
+        const trSelect = document.querySelectorAll('tr');
         for (let i = 0; i < items.length; i++) {
             if (items[i].checked) {
-                allItem.push({name: items[i].dataset.name, changed: ""});
+                allItem.push({name: items[i].dataset.name, changed: trSelect[i + 1].dataset.date});
             }
         }
-        ipcRenderer.send('playout', JSON.stringify(allItem));
-        document.getElementById("submitbutton").disabled = true;
+        if (allItem.length > 0) {
+            ipcRenderer.send('playout', JSON.stringify(allItem));
+            document.getElementById("submitbutton").disabled = true;
+            this.saveFile("savedfile", "test.txt", JSON.stringify(allItem));
+        }
+        else {
+            console.log("nothinchecked")
+        }
 
-        this.saveFile("savedfile", "test.txt", JSON.stringify(allItem));
+        // if (items.checked){
+        //
+        // }
+
     }
 
-
-
+    testButton() {
+        const createButton = document.createElement("input");
+        createButton.setAttribute("type", "submit");
+        createButton.value = "testbutton";
+        createButton.id = "submitbutton2";
+        createButton.onclick = () => {
+            this.testItem();
+        };
+        document.body.appendChild(createButton);
+    }
 
 
     UnSelectAll() {
