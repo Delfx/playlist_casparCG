@@ -46,6 +46,32 @@ class dataVideoAll {
         document.body.appendChild(createButton);
     }
 
+    testButton() {
+        const createButton = document.createElement("input");
+        createButton.setAttribute("type", "submit");
+        createButton.value = "testbutton";
+        createButton.id = "submitbutton2";
+        createButton.onclick = () => {
+            this.testItem();
+        };
+        document.body.appendChild(createButton);
+    }
+
+
+    testItem() {
+        const allItem = [];
+        const items = document.getElementsByName('acs');
+        const trSelect = document.querySelectorAll('tr');
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].checked) {
+                allItem.push({name: items[i].dataset.name, changed: trSelect[i+1].dataset.date});
+                console.log(trSelect[i+1].dataset.date)
+            }
+        }
+
+        this.saveFile("savedfile", "test.txt", JSON.stringify(allItem));
+    }
+
 
     //TODO make catch dialog box
     async saveFile(destination, filename, data) {
@@ -59,14 +85,13 @@ class dataVideoAll {
     }
 
     //TODO dialog open and save file
-    //TODO add readfile async node fs
+    //TODO add readfile async node fs +
 
-   async readFile() {
+    async readFile() {
         const file2 = path.join("savedfile", "test.txt");
-       // await fsPromises.readFile('D:/Pamokos/!2019/playlist_casparCG/savedfile/file.txt', 'utf8'
         try {
-          this.getAllVideoList(await fsPromises.readFile(file2, 'utf8'));
-        }catch (e) {
+            this.getAllVideoList(await fsPromises.readFile(file2, 'utf8'));
+        } catch (e) {
             console.log(e);
         }
         // console.dir(JSON.stringify(jsonfile.readFileSync(file2)));
@@ -83,7 +108,6 @@ class dataVideoAll {
             for (let i = 1, rowsLength = getTable.rows.length; i < rowsLength; i++) {
                 getTable.deleteRow(-1);
             }
-
             this.readFile();
         };
         document.body.appendChild(createButton);
@@ -94,7 +118,7 @@ class dataVideoAll {
         const items = document.getElementsByName('acs');
         for (let i = 0; i < items.length; i++) {
             if (items[i].checked) {
-                allItem.push({name: items[i].dataset.name});
+                allItem.push({name: items[i].dataset.name, changed: ""});
             }
         }
         ipcRenderer.send('playout', JSON.stringify(allItem));
@@ -102,6 +126,9 @@ class dataVideoAll {
 
         this.saveFile("savedfile", "test.txt", JSON.stringify(allItem));
     }
+
+
+
 
 
     UnSelectAll() {
@@ -142,6 +169,13 @@ class dataVideoAll {
 
     }
 
+    addAllButton() {
+        this.selectAll();
+        this.UnSelectAll();
+        this.submitButton();
+        this.loadButton();
+        this.testButton();
+    }
 
     getAllVideoList(data) {
         console.log(data);
@@ -203,7 +237,7 @@ class dataVideoAll {
                 const inputField = document.createElement("input");
                 inputField.setAttribute("type", "datetime-local");
                 inputField.setAttribute("value", getDate.parentNode.dataset.date);
-                console.log(getDate);
+                // console.log(getDate);
                 createElement.appendChild(inputField);
                 getDate.parentNode.replaceChild(createElement, getDate);
                 inputField.addEventListener("blur", function (event) {
@@ -228,19 +262,13 @@ class dataVideoAll {
 
     }
 
-    addAllButton(){
-        this.selectAll();
-        this.UnSelectAll();
-        this.submitButton();
-        this.loadButton();
-    }
 
 }
 
 
 module.exports = dataVideoAll;
 
-//TODO add to file date and time
+//TODO add to file date and time +
 
 
 
