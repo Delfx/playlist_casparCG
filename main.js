@@ -49,7 +49,7 @@ function createWindow() {
                         }
                     },
                     {
-                        label: 'Load File',
+                        label: 'Open File',
                         accelerator: 'CmdOrCtrl+L',
                         click() {
                             event.reply('get-status-load', 1);
