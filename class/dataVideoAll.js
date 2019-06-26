@@ -1,4 +1,4 @@
-const {dialog} = require('electron').remote;
+const {dialog, Menu, MenuItem} = require('electron').remote;
 const {ipcRenderer} = require('electron');
 const moment = require('moment');
 const fsPromises = require('fs').promises;
@@ -12,13 +12,6 @@ const path = require('path');
 
 class dataVideoAll {
 
-    // constructor(data) {
-    //     this.data = data;
-    // }
-
-    getending(data) {
-        // console.log(data);
-    }
 
     checkbox(cellname, entryname) {
         const checkbox = document.createElement("INPUT");
@@ -62,7 +55,6 @@ class dataVideoAll {
     }
 
 
-
     readFile() {
         dialog.showOpenDialog({
             properties: ['openFile'], filters: [
@@ -84,12 +76,41 @@ class dataVideoAll {
     }
 
     testItem() {
-        console.log(dialog.showOpenDialog({
-            properties: ['openFile'], filters: [
-                {name: "Text", extensions: ["txt", "json"]}
+        const fs = require('fs');
+        const allItem = [];
+        const items = document.getElementsByName('acs');
+        const trSelect = document.querySelectorAll('tr');
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].checked) {
+                allItem.push({name: items[i].dataset.name, changed: trSelect[i + 1].dataset.date});
+            }
+        }
+        const jointest = path.join('..' ,'project_copy', 'test.txt');
+        const savePath = dialog.showSaveDialog({
+            defaultPath: jointest,
+            filters: [
+                {name: 'Text', extensions: ['txt']}
             ]
-        }))
+        });
+        if (!savePath){
+            return
+        }
+        fs.writeFile(savePath, JSON.stringify(allItem), function (err) {
+
+        });
     }
+
+    testButton() {
+        const createButton = document.createElement("input");
+        createButton.setAttribute("type", "submit");
+        createButton.value = "testbutton";
+        createButton.id = "submitbutton2";
+        createButton.onclick = () => {
+            this.testItem();
+        };
+        document.body.appendChild(createButton);
+    }
+
 
     deleteRows() {
         const getTable = document.getElementById("myTable");
@@ -134,21 +155,6 @@ class dataVideoAll {
             });
         }
 
-        // if (items.checked){
-        //
-        // }
-
-    }
-
-    testButton() {
-        const createButton = document.createElement("input");
-        createButton.setAttribute("type", "submit");
-        createButton.value = "testbutton";
-        createButton.id = "submitbutton2";
-        createButton.onclick = () => {
-            this.testItem();
-        };
-        document.body.appendChild(createButton);
     }
 
 
@@ -194,6 +200,7 @@ class dataVideoAll {
         this.UnSelectAll();
         this.submitButton();
         this.loadButton();
+        this.testButton();
     }
 
     getAllVideoList(data) {

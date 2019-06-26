@@ -1,5 +1,5 @@
 const electron = require('electron');
-const {app, BrowserWindow, Notification, ipcMain, dialog} = require('electron');
+const {app, BrowserWindow, ipcMain, Menu} = require('electron');
 const Playlist = require('./playlist.js');
 
 
@@ -15,6 +15,7 @@ function createWindow() {
             nodeIntegration: true
         }
     });
+
 
     // and load the index.html of the app.
     win.loadFile('index.html');
@@ -34,6 +35,38 @@ function createWindow() {
     const play = new Playlist();
 
     ipcMain.on('get-all-available-videos', async event => {
+
+
+        const menu = Menu.buildFromTemplate([
+            {
+                label: 'Menu',
+                submenu: [
+                    {
+                        label: 'Save File',
+                        accelerator: 'CmdOrCtrl+S',
+                        click() {
+                            event.reply('get-status-save', 1);
+                        }
+                    },
+                    {
+                        label: 'Load File',
+                        accelerator: 'CmdOrCtrl+L',
+                        click() {
+                            event.reply('get-status-load', 1);
+                        }
+                    },
+                    {
+                        label: 'Exit',
+                        accelerator: 'CmdOrCtrl+Q',
+                        click() {
+                            app.quit()
+                        }
+                    }
+                ]
+            }
+        ]);
+        Menu.setApplicationMenu(menu);
+
         const queue = new Playlist();
 
         const getall = await queue.getAllvideolist();
@@ -45,8 +78,8 @@ function createWindow() {
 
     ipcMain.on('playout', async (event, data) => {
         try {
-          await play.runPlaylist(JSON.parse(data));
-          event.reply('get-status', 1);
+            await play.runPlaylist(JSON.parse(data));
+            event.reply('get-status', 1);
 
         } catch (err) {
             console.log(err);
