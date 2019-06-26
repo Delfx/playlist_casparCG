@@ -1,10 +1,10 @@
-const {dialog, Menu, MenuItem} = require('electron').remote;
+const {dialog} = require('electron').remote;
 const {ipcRenderer} = require('electron');
 const moment = require('moment');
 const fsPromises = require('fs').promises;
 const path = require('path');
 
-//TODO file savefile with schortkey (mac and win)
+//TODO file savefile with schortkey (mac and win)+
 //TODO Startmenu progres bar https://electronjs.org/docs/tutorial/progress-bar
 //TODO save information to sqllite
 //TODO SORT https://github.com/SortableJS/Sortable
@@ -75,7 +75,7 @@ class dataVideoAll {
 
     }
 
-    testItem() {
+    saveItem() {
         const fs = require('fs');
         const allItem = [];
         const items = document.getElementsByName('acs');
@@ -85,9 +85,8 @@ class dataVideoAll {
                 allItem.push({name: items[i].dataset.name, changed: trSelect[i + 1].dataset.date});
             }
         }
-        const jointest = path.join('..' ,'project_copy', 'test.txt');
         const savePath = dialog.showSaveDialog({
-            defaultPath: jointest,
+            // defaultPath: "../test_class/",
             filters: [
                 {name: 'Text', extensions: ['txt']}
             ]
@@ -100,16 +99,16 @@ class dataVideoAll {
         });
     }
 
-    testButton() {
-        const createButton = document.createElement("input");
-        createButton.setAttribute("type", "submit");
-        createButton.value = "testbutton";
-        createButton.id = "submitbutton2";
-        createButton.onclick = () => {
-            this.testItem();
-        };
-        document.body.appendChild(createButton);
-    }
+    // testButton() {
+    //     const createButton = document.createElement("input");
+    //     createButton.setAttribute("type", "submit");
+    //     createButton.value = "testbutton";
+    //     createButton.id = "submitbutton2";
+    //     createButton.onclick = () => {
+    //         this.testItem();
+    //     };
+    //     document.body.appendChild(createButton);
+    // }
 
 
     deleteRows() {
@@ -200,7 +199,6 @@ class dataVideoAll {
         this.UnSelectAll();
         this.submitButton();
         this.loadButton();
-        this.testButton();
     }
 
     getAllVideoList(data) {

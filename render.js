@@ -26,7 +26,7 @@ ipcRenderer.on('get-status-load', (event, status) => {
 ipcRenderer.on('get-status-save', (event, status) => {
     if (status === 1){
         const videoAll = new dataVideoAll();
-        videoAll.readFile();
+        videoAll.saveItem();
     }
 });
 
