@@ -189,7 +189,6 @@ class dataVideoAll {
         this.UnSelectAll();
         this.submitButton();
         this.loadButton();
-        this.testButton();
     }
 
     getAllVideoList(data) {
