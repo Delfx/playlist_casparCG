@@ -47,6 +47,7 @@ function createWindow() {
         try {
           await play.runPlaylist(JSON.parse(data));
           event.reply('get-status', 1);
+
         } catch (err) {
             console.log(err);
         }

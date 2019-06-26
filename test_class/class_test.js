@@ -1,24 +1,21 @@
-const fsPromises = require('fs').promises;
-
-async function openAndClose() {
-       await fsPromises.writeFile('D:/Pamokos/!2019/playlist_casparCG/savedfile/file.txt', 'labas5');
-}
-
- async function open() {
-       // await fsPromises.readFile("D:\\Pamokos\\!2019\\playlist_casparCG\\savedfile\\test.txt")
-       //         console.log(fsPromises.readFileSync('D:/Pamokos/!2019/playlist_casparCG/savedfile/test.txt', 'utf8'));
-       // await fsPromises.readFile('D:/Pamokos/!2019/playlist_casparCG/savedfile/test.txt', {encoding: 'utf8'}, (err, data) => {
-       //         if (err) throw err;
-       //         console.log(data);
-       //  });
-
-        // let data = ;
-        console.log());
-
-}
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+const db = new sqlite3.Database(path.join('..','DataBase', 'filename'));
 
 
+db.serialize(function() {
+    db.run("CREATE TABLE IF NOT EXISTS videoFile (name TEXT,changed TEXT)");
 
-open();
+    const stmt = db.prepare("INSERT INTO videoFile VALUES (?, ?)");
+    for (let i = 0; i < 10; i++) {
+        stmt.run("SECOND " + i, "1231T51");
+    }
+    stmt.finalize();
 
+    db.each("SELECT rowid AS id, name FROM videoFile", function(err, row) {
+        console.log(row.id + ": " + row.name);
+    });
+});
+
+db.close();
 

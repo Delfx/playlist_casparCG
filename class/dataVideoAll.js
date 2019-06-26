@@ -1,9 +1,14 @@
 const {dialog} = require('electron').remote;
 const {ipcRenderer} = require('electron');
 const moment = require('moment');
-const jsonfile = require('jsonfile');
 const fsPromises = require('fs').promises;
 const path = require('path');
+
+//TODO file savefile with schortkey (mac and win)
+//TODO Startmenu progres bar https://electronjs.org/docs/tutorial/progress-bar
+//TODO save information to sqllite
+//TODO SORT https://github.com/SortableJS/Sortable
+
 
 class dataVideoAll {
 
@@ -47,7 +52,6 @@ class dataVideoAll {
     }
 
 
-    //TODO make catch dialog box+
     async saveFile(destination, filename, data) {
         const file = path.join(destination, filename);
         try {
@@ -57,8 +61,7 @@ class dataVideoAll {
         }
     }
 
-    //TODO dialog open and save file +
-    //TODO add readfile async node fs +
+
 
     readFile() {
         dialog.showOpenDialog({
@@ -66,16 +69,17 @@ class dataVideoAll {
                 {name: "Text", extensions: ["txt", "json"]}
             ]
         }, async (respons) => {
+            if (!respons) {
+                return;
+            }
             try {
                 console.log(respons[0]);
+                this.deleteRows();
                 this.getAllVideoList(await fsPromises.readFile(respons[0], 'utf8'));
             } catch (e) {
                 console.log(e);
             }
         });
-        // const file2 = path.join("savedfile", "test.txt");
-        // console.dir(JSON.stringify(jsonfile.readFileSync(file2)));
-        // this.getAllVideoList(JSON.stringify(jsonfile.readFileSync(file2)));
 
     }
 
@@ -87,15 +91,18 @@ class dataVideoAll {
         }))
     }
 
+    deleteRows() {
+        const getTable = document.getElementById("myTable");
+        for (let i = 1, rowsLength = getTable.rows.length; i < rowsLength; i++) {
+            getTable.deleteRow(-1);
+        }
+    }
+
     loadButton() {
         const createButton = document.createElement("input");
         createButton.setAttribute("type", "submit");
         createButton.value = "LoadData";
         createButton.onclick = () => {
-            const getTable = document.getElementById("myTable");
-            for (let i = 1, rowsLength = getTable.rows.length; i < rowsLength; i++) {
-                getTable.deleteRow(-1);
-            }
             this.readFile();
         };
         document.body.appendChild(createButton);
@@ -114,8 +121,7 @@ class dataVideoAll {
             ipcRenderer.send('playout', JSON.stringify(allItem));
             document.getElementById("submitbutton").disabled = true;
             this.saveFile("savedfile", "test.txt", JSON.stringify(allItem));
-        }
-        else {
+        } else {
             const options = {
                 type: 'info',
                 buttons: ['Ok'],
@@ -151,7 +157,6 @@ class dataVideoAll {
         const createButtonText = document.createTextNode("UnSelectAll");
         createButton.appendChild(createButtonText);
         const items = document.getElementsByName('acs');
-        //TODO change to addeventlistener
         createButton.onclick = function () {
             for (let i = 0; i < items.length; i++) {
                 items[i].checked = false;
@@ -282,7 +287,6 @@ class dataVideoAll {
 
 module.exports = dataVideoAll;
 
-//TODO add to file date and time +
 
 
 
