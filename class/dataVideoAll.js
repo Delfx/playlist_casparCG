@@ -116,7 +116,16 @@ class dataVideoAll {
             this.saveFile("savedfile", "test.txt", JSON.stringify(allItem));
         }
         else {
-            console.log("nothinchecked")
+            const options = {
+                type: 'info',
+                buttons: ['Ok'],
+                title: 'Question',
+                detail: 'Check video to play',
+
+            };
+            dialog.showMessageBox(null, options, (response) => {
+                console.log(response);
+            });
         }
 
         // if (items.checked){
