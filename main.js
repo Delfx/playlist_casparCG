@@ -1,6 +1,9 @@
 const electron = require('electron');
 const {app, BrowserWindow, ipcMain, Menu} = require('electron');
 const Playlist = require('./playlist.js');
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+const db = new sqlite3.Database(path.join('DataBase', 'filename2'));
 
 
 let win;
@@ -77,9 +80,30 @@ function createWindow() {
     });
 
     ipcMain.on('playout', async (event, data) => {
+
+        function dataBaseStart (){
+            db.serialize(function() {
+                db.run("CREATE TABLE IF NOT EXISTS videoFile2 (name TEXT,changed TEXT)");
+                db.run("DELETE FROM videoFile2");
+                const stmt = db.prepare("INSERT INTO videoFile2 VALUES (?, ?)");
+
+                for (const entry of data) {
+                    stmt.run(entry.name, entry.changed);
+                }
+                stmt.finalize();
+
+
+                db.each("SELECT rowid AS id, name, changed  FROM videoFile2", function(err, row) {
+                    console.log(row.id + ": " + row.name + " " + row.changed);
+                });
+            });
+
+        }
+
         try {
-            await play.runPlaylist(JSON.parse(data));
+            await play.runPlaylist(data);
             event.reply('get-status', 1);
+            dataBaseStart();
 
         } catch (err) {
             console.log(err);

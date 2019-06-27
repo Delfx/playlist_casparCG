@@ -6,7 +6,7 @@ const path = require('path');
 
 //TODO file savefile with schortkey (mac and win)+
 //TODO Startmenu progres bar https://electronjs.org/docs/tutorial/progress-bar
-//TODO save information to sqllite
+//TODO save information to sqllite +
 //TODO SORT https://github.com/SortableJS/Sortable
 
 
@@ -138,7 +138,7 @@ class dataVideoAll {
             }
         }
         if (allItem.length > 0) {
-            ipcRenderer.send('playout', JSON.stringify(allItem));
+            ipcRenderer.send('playout', allItem);
             document.getElementById("submitbutton").disabled = true;
             this.saveFile("savedfile", "test.txt", JSON.stringify(allItem));
         } else {
