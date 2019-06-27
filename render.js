@@ -17,17 +17,13 @@ ipcRenderer.on('get-status', (event, status) => {
 });
 
 ipcRenderer.on('get-status-load', (event, status) => {
-    if (status === 1){
         const videoAll = new dataVideoAll();
         videoAll.readFile();
-    }
 });
 
 ipcRenderer.on('get-status-save', (event, status) => {
-    if (status === 1){
         const videoAll = new dataVideoAll();
         videoAll.saveItem();
-    }
 });
 
 

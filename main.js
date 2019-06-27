@@ -45,14 +45,14 @@ function createWindow() {
                         label: 'Save File',
                         accelerator: 'CmdOrCtrl+S',
                         click() {
-                            event.reply('get-status-save', 1);
+                            event.reply('get-status-save');
                         }
                     },
                     {
                         label: 'Open File',
                         accelerator: 'CmdOrCtrl+L',
                         click() {
-                            event.reply('get-status-load', 1);
+                            event.reply('get-status-load');
                         }
                     },
                     {
