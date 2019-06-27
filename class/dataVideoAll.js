@@ -1,4 +1,4 @@
-const {dialog} = require('electron').remote;
+const {dialog, BrowserWindow } = require('electron').remote;
 const {ipcRenderer} = require('electron');
 const moment = require('moment');
 const fsPromises = require('fs').promises;
@@ -40,6 +40,7 @@ class dataVideoAll {
         createButton.id = "submitbutton";
         createButton.onclick = () => {
             this.submitItem();
+
         };
         document.body.appendChild(createButton);
     }

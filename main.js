@@ -101,6 +101,7 @@ function createWindow() {
         }
 
         try {
+
             await play.runPlaylist(data);
             event.reply('get-status', 1);
             dataBaseStart();
