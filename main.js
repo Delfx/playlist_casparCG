@@ -18,7 +18,39 @@ function createWindow() {
             nodeIntegration: true
         }
     });
-
+    //TODO event eminter read
+    win.webContents.on('did-finish-load', () => {
+        const menu = Menu.buildFromTemplate([
+            {
+                label: 'Menu',
+                submenu: [
+                    {
+                        label: 'Save File',
+                        accelerator: 'CmdOrCtrl+S',
+                        click() {
+                            win.webContents.send('get-status-save');
+                        }
+                    },
+                    {
+                        label: 'Open File',
+                        accelerator: 'CmdOrCtrl+L',
+                        click() {
+                            win.webContents.send('get-status-load');
+                        }
+                    },
+                    {
+                        label: 'Exit',
+                        accelerator: 'CmdOrCtrl+Q',
+                        click() {
+                            app.quit()
+                        }
+                    }
+                ]
+            }
+        ]);
+        Menu.setApplicationMenu(menu);
+        console.log("LABAS")
+    });
 
     // and load the index.html of the app.
     win.loadFile('index.html');
@@ -35,41 +67,12 @@ function createWindow() {
         win = null
     });
     // NodeJS
-    const play = new Playlist();
+    const play = new Playlist(win);
+
+
+    // win.webContents.send('get-time-all', ());
 
     ipcMain.on('get-all-available-videos', async event => {
-
-
-        const menu = Menu.buildFromTemplate([
-            {
-                label: 'Menu',
-                submenu: [
-                    {
-                        label: 'Save File',
-                        accelerator: 'CmdOrCtrl+S',
-                        click() {
-                            event.reply('get-status-save');
-                        }
-                    },
-                    {
-                        label: 'Open File',
-                        accelerator: 'CmdOrCtrl+L',
-                        click() {
-                            event.reply('get-status-load');
-                        }
-                    },
-                    {
-                        label: 'Exit',
-                        accelerator: 'CmdOrCtrl+Q',
-                        click() {
-                            app.quit()
-                        }
-                    }
-                ]
-            }
-        ]);
-        Menu.setApplicationMenu(menu);
-
         const queue = new Playlist();
 
         const getall = await queue.getAllvideolist();
@@ -81,9 +84,11 @@ function createWindow() {
 
     ipcMain.on('playout', async (event, data) => {
 
-        function dataBaseStart (){
-            db.serialize(function() {
+        function dataBaseStart() {
+            db.serialize(function () {
                 db.run("CREATE TABLE IF NOT EXISTS videoFile2 (name TEXT,changed TEXT)");
+                //TODO delete when button.
+                //TODO add from database
                 db.run("DELETE FROM videoFile2");
                 const stmt = db.prepare("INSERT INTO videoFile2 VALUES (?, ?)");
 
@@ -93,7 +98,7 @@ function createWindow() {
                 stmt.finalize();
 
 
-                db.each("SELECT rowid AS id, name, changed  FROM videoFile2", function(err, row) {
+                db.each("SELECT rowid AS id, name, changed  FROM videoFile2", function (err, row) {
                     console.log(row.id + ": " + row.name + " " + row.changed);
                 });
             });

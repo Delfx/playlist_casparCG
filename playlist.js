@@ -13,6 +13,10 @@ const connection = new CasparCG();
 
 class VideoQueue {
 
+    constructor(win) {
+        this.win = win;
+    }
+
 
     async getAllvideolist() {
         const playlist = await connection.thumbnailList();
@@ -73,6 +77,7 @@ class VideoQueue {
                 const videotimelast = videotime2.layer.layer_1.foreground.file.time[1];
                 console.log(videotimefirst, videotimelast);
                 const decimalnumber = new Decimal(videotimelast); // pakeisti pavadinima ne i X
+                this.win.webContents.send('get-time', JSON.stringify({nowTime: videotimefirst, endTime: videotimelast, name: entry.name}));
                 if (decimalnumber.equals(new Decimal(videotimefirst))) {
                     console.log("lygu");
                     console.log("isgrojo" + entry.name);
