@@ -77,7 +77,11 @@ class VideoQueue {
                 const videotimelast = videotime2.layer.layer_1.foreground.file.time[1];
                 console.log(videotimefirst, videotimelast);
                 const decimalnumber = new Decimal(videotimelast); // pakeisti pavadinima ne i X
-                this.win.webContents.send('get-time', JSON.stringify({nowTime: videotimefirst, endTime: videotimelast, name: entry.name}));
+                this.win.webContents.send('get-time', JSON.stringify({
+                    nowTime: videotimefirst,
+                    endTime: videotimelast,
+                    name: entry.name
+                }));
                 if (decimalnumber.equals(new Decimal(videotimefirst))) {
                     console.log("lygu");
                     console.log("isgrojo" + entry.name);
@@ -94,16 +98,6 @@ class VideoQueue {
         await connection.stop(1, 1);
 
     }
-
-    async clipended() {
-        const videoinfo = await connection.info(1, 1);
-        const videotime2 = videoinfo.response.data.stage;
-        const videotimelast = videotime2.layer.layer_1.foreground.file.time[1];
-        console.log(videotimelast + "baigesi");
-
-    }
-
-
 
 }
 
