@@ -4,9 +4,8 @@ const moment = require('moment');
 const fsPromises = require('fs').promises;
 const path = require('path');
 
-//TODO file savefile with schortkey (mac and win)+
-//TODO Startmenu progres bar https://electronjs.org/docs/tutorial/progress-bar+
-//TODO save information to sqllite +
+
+//TODO Startmenu progres bar https://electronjs.org/docs/tutorial/progress-bar
 //TODO SORT https://github.com/SortableJS/Sortable
 
 

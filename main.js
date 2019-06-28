@@ -18,7 +18,7 @@ function createWindow() {
             nodeIntegration: true
         }
     });
-    //TODO event eminter read
+
     win.webContents.on('did-finish-load', () => {
         const menu = Menu.buildFromTemplate([
             {
