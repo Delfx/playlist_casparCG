@@ -1,4 +1,4 @@
-const {dialog, BrowserWindow } = require('electron').remote;
+const {dialog, BrowserWindow} = require('electron').remote;
 const {ipcRenderer} = require('electron');
 const moment = require('moment');
 const fsPromises = require('fs').promises;
@@ -11,6 +11,21 @@ const path = require('path');
 
 class dataVideoAll {
 
+
+    serverDeleteButton() {
+        ipcRenderer.send('delete-all-database-items');
+    }
+
+    deleteFromDataBaseButton() {
+        const createButton = document.createElement("input");
+        createButton.setAttribute("type", "submit");
+        createButton.value = "testbutton";
+        createButton.id = "deleteFromBase";
+        createButton.onclick = () => {
+            this.serverDeleteButton();
+        };
+        document.body.appendChild(createButton);
+    }
 
     checkbox(cellname, entryname) {
         const checkbox = document.createElement("INPUT");
@@ -91,24 +106,13 @@ class dataVideoAll {
                 {name: 'Text', extensions: ['txt']}
             ]
         });
-        if (!savePath){
+        if (!savePath) {
             return
         }
         fs.writeFile(savePath, JSON.stringify(allItem), function (err) {
 
         });
     }
-
-    // testButton() {
-    //     const createButton = document.createElement("input");
-    //     createButton.setAttribute("type", "submit");
-    //     createButton.value = "testbutton";
-    //     createButton.id = "submitbutton2";
-    //     createButton.onclick = () => {
-    //         this.testItem();
-    //     };
-    //     document.body.appendChild(createButton);
-    // }
 
 
     deleteRows() {
@@ -199,6 +203,7 @@ class dataVideoAll {
         this.UnSelectAll();
         this.submitButton();
         this.loadButton();
+        this.deleteFromDataBaseButton();
     }
 
     getAllVideoList(data) {

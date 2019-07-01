@@ -19,7 +19,7 @@ function createWindow() {
         }
     });
 
-    win.webContents.on('did-finish-load', () => {
+    win.webContents.on('did-start-loading', () => {
         const menu = Menu.buildFromTemplate([
             {
                 label: 'Menu',
@@ -49,7 +49,6 @@ function createWindow() {
             }
         ]);
         Menu.setApplicationMenu(menu);
-        console.log("LABAS")
     });
 
     // and load the index.html of the app.
@@ -82,22 +81,27 @@ function createWindow() {
         // event.reply('get-ending-time', JSON.stringify(clipEndingTime));
     });
 
-    ipcMain.on('playout', async (event, data) => {
+    ipcMain.on('delete-all-database-items', () => {
+        db.serialize(function (err) {
+            db.each("SELECT rowid AS id, name, changed  FROM videoFile2", function (err, row) {
+                console.log(row.id + ": " + row.name + " " + row.changed);
+            });
+            db.run("DELETE FROM videoFile2");
+        });
+    });
 
+
+    ipcMain.on('playout', async (event, data) => {
         function dataBaseStart() {
             db.serialize(function () {
                 db.run("CREATE TABLE IF NOT EXISTS videoFile2 (name TEXT,changed TEXT)");
-                //TODO delete when button.
+                //TODO delete when button.+
                 //TODO add from database
-                db.run("DELETE FROM videoFile2");
                 const stmt = db.prepare("INSERT INTO videoFile2 VALUES (?, ?)");
-
                 for (const entry of data) {
                     stmt.run(entry.name, entry.changed);
                 }
                 stmt.finalize();
-
-
                 db.each("SELECT rowid AS id, name, changed  FROM videoFile2", function (err, row) {
                     console.log(row.id + ": " + row.name + " " + row.changed);
                 });
