@@ -72,6 +72,8 @@ function createWindow() {
     // win.webContents.send('get-time-all', ());
 
     ipcMain.on('get-all-available-videos', async event => {
+
+
         const queue = new Playlist();
 
         const getall = await queue.getAllvideolist();
@@ -84,9 +86,19 @@ function createWindow() {
     ipcMain.on('delete-all-database-items', () => {
         db.serialize(function (err) {
             db.each("SELECT rowid AS id, name, changed  FROM videoFile2", function (err, row) {
-                console.log(row.id + ": " + row.name + " " + row.changed);
+                // console.log(row.id + ": " + row.name + " " + row.changed);
+                console.log(row);
             });
             db.run("DELETE FROM videoFile2");
+        });
+    });
+
+    ipcMain.on('get-data-from-database', (event) =>{
+        db.serialize(function (err) {
+            db.each("SELECT rowid AS id, name, changed  FROM videoFile2", function (err, row) {
+                // console.log(row.id + ": " + row.name + " " + row.changed);
+                event.reply('add-data-from-server-to-playlist', row)
+            });
         });
     });
 
@@ -102,9 +114,7 @@ function createWindow() {
                     stmt.run(entry.name, entry.changed);
                 }
                 stmt.finalize();
-                db.each("SELECT rowid AS id, name, changed  FROM videoFile2", function (err, row) {
-                    console.log(row.id + ": " + row.name + " " + row.changed);
-                });
+
             });
 
         }

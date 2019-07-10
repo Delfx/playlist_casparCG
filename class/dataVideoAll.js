@@ -5,6 +5,8 @@ const fsPromises = require('fs').promises;
 const path = require('path');
 
 
+
+
 //TODO Startmenu progres bar https://electronjs.org/docs/tutorial/progress-bar
 //TODO SORT https://github.com/SortableJS/Sortable
 
@@ -19,7 +21,7 @@ class dataVideoAll {
     deleteFromDataBaseButton() {
         const createButton = document.createElement("input");
         createButton.setAttribute("type", "submit");
-        createButton.value = "testbutton";
+        createButton.value = "Delete From Database";
         createButton.id = "deleteFromBase";
         createButton.onclick = () => {
             this.serverDeleteButton();
@@ -122,6 +124,18 @@ class dataVideoAll {
         }
     }
 
+//creating button Load Data from file
+    loadButton() {
+        const createButton = document.createElement("input");
+        createButton.setAttribute("type", "submit");
+        createButton.value = "LoadData";
+        createButton.onclick = () => {
+            this.readFile();
+        };
+        document.body.appendChild(createButton);
+    }
+
+//creating button Load Data from database
     loadButton() {
         const createButton = document.createElement("input");
         createButton.setAttribute("type", "submit");

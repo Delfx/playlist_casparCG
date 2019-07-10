@@ -5,6 +5,9 @@
     <title>Test Player</title>
 </head>
 <body>
+
+<script src="node_modules/sortablejs/Sortable.js"></script>
+
 <h1>Test Player</h1>
 
 <form action="" id="myForm">
@@ -24,6 +27,11 @@
 <!--and Electron <script>document.write(process.versions.electron)</script>.-->
 </body>
 <script>
-    require('./render')
+    require('./render');
+    // new Sortable(myTable, {
+    //     group: 'shared', // set both lists to same group
+    //     animation: 150
+    // });
+
 </script>
 </html>
