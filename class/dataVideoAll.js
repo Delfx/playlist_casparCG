@@ -2,6 +2,7 @@ const {dialog, BrowserWindow} = require('electron').remote;
 const {ipcRenderer} = require('electron');
 const moment = require('moment');
 const fsPromises = require('fs').promises;
+const fs = require('fs');
 const path = require('path');
 
 
@@ -158,7 +159,11 @@ class dataVideoAll {
         if (allItem.length > 0) {
             ipcRenderer.send('playout', allItem);
             document.getElementById("submitbutton").disabled = true;
-            this.saveFile("savedfile", "test.txt", JSON.stringify(allItem));
+            const dir = './savedfile';
+            if (!fs.existsSync(dir)){
+                fsPromises.mkdir(dir);
+                this.saveFile("savedfile", "test.txt", JSON.stringify(allItem));
+            }
         } else {
             const options = {
                 type: 'info',
