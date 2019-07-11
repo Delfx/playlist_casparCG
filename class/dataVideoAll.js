@@ -1,15 +1,18 @@
-const {dialog, BrowserWindow} = require('electron').remote;
+const {dialog} = require('electron').remote;
 const {ipcRenderer} = require('electron');
 const moment = require('moment');
 const fsPromises = require('fs').promises;
 const fs = require('fs');
 const path = require('path');
+const sort = require('sortablejs');
 
 
 
 
 //TODO Startmenu progres bar https://electronjs.org/docs/tutorial/progress-bar
-//TODO SORT https://github.com/SortableJS/Sortable
+//TODO SORT https://github.com/SortableJS/Sortable +
+//TODO find event after finish animation in Sortable
+//TODO database handle error
 
 
 class dataVideoAll {
@@ -29,6 +32,19 @@ class dataVideoAll {
         };
         document.body.appendChild(createButton);
     }
+
+    addFromDataBaseButton() {
+        const createButton = document.createElement("input");
+        createButton.setAttribute("type", "submit");
+        createButton.value = "Add From Database";
+        createButton.id = "addFromBase";
+        createButton.onclick = () => {
+            this.deleteRows();
+            ipcRenderer.send('get-data-from-database', ()=>{
+            })
+        };
+        document.body.appendChild(createButton);
+    };
 
     checkbox(cellname, entryname) {
         const checkbox = document.createElement("INPUT");
@@ -223,14 +239,17 @@ class dataVideoAll {
         this.submitButton();
         this.loadButton();
         this.deleteFromDataBaseButton();
+        this.addFromDataBaseButton();
     }
 
     getAllVideoList(data) {
         console.log(data);
-        const table = document.getElementById("myTable");
+        // const table = document.getElementById("myTable");
+        const table = document.querySelector("#myTable tbody");
         for (const entry of JSON.parse(data)) {
             const rowLegth = table.rows.length;
             let row = table.insertRow();
+            row.classList.add("item");
             row.dataset.id = rowLegth;
             const checkbox = row.insertCell();
             const cell1 = row.insertCell();

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Test Player</title>
@@ -10,28 +10,32 @@
 
 <h1>Test Player</h1>
 
-<form action="" id="myForm">
+<form id="myForm">
     <table id="myTable">
-        <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Date</th>
-        </tr>
-
+        <thead>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Date</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
     </table>
 </form>
-
-
 <!--We are using node <script>document.write(process.version.node)</script>,-->
 <!--Chrome <script>document.write(process.versions.chrome)</script>,-->
 <!--and Electron <script>document.write(process.versions.electron)</script>.-->
-</body>
 <script>
     require('./render');
-    // new Sortable(myTable, {
-    //     group: 'shared', // set both lists to same group
-    //     animation: 150
-    // });
-
+    const getTable = document.querySelector("#myTable tbody");
+    // const getTable2 = document.getElementById("myTable");
+    // getTable2.tBodies[0];
+    new Sortable(getTable, {
+        animation: 150,
+        ghostClass: 'blue-background-class'
+    })
 </script>
+</body>
+
 </html>

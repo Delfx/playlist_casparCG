@@ -72,22 +72,16 @@ function createWindow() {
     // win.webContents.send('get-time-all', ());
 
     ipcMain.on('get-all-available-videos', async event => {
-
-
         const queue = new Playlist();
-
         const getall = await queue.getAllvideolist();
-        // const clipEndingTime = await queue.clipended();
-
         event.reply('all-available-videos', JSON.stringify(getall));
-        // event.reply('get-ending-time', JSON.stringify(clipEndingTime));
     });
 
     ipcMain.on('delete-all-database-items', () => {
         db.serialize(function (err) {
-            db.each("SELECT rowid AS id, name, changed  FROM videoFile2", function (err, row) {
+            db.each("SELECT COUNT(*) AS number FROM videoFile2", function (err, row) {
                 // console.log(row.id + ": " + row.name + " " + row.changed);
-                console.log(row);
+                console.log(row.number);
             });
             db.run("DELETE FROM videoFile2");
         });
@@ -96,9 +90,9 @@ function createWindow() {
     ipcMain.on('get-data-from-database', (event) =>{
         db.serialize(function (err) {
             db.each("SELECT rowid AS id, name, changed  FROM videoFile2", function (err, row) {
-                // console.log(row.id + ": " + row.name + " " + row.changed);
-                event.reply('add-data-from-server-to-playlist', row)
+                event.reply('add-data-from-server-to-playlist', JSON.stringify([row]))
             });
+
         });
     });
 
@@ -108,7 +102,7 @@ function createWindow() {
             db.serialize(function () {
                 db.run("CREATE TABLE IF NOT EXISTS videoFile2 (name TEXT,changed TEXT)");
                 //TODO delete when button.+
-                //TODO add from database
+                //TODO add from database +
                 const stmt = db.prepare("INSERT INTO videoFile2 VALUES (?, ?)");
                 for (const entry of data) {
                     stmt.run(entry.name, entry.changed);

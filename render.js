@@ -1,4 +1,5 @@
 const {ipcRenderer} = require('electron');
+const { BrowserWindow } = require('electron')
 const dataVideoAll = require('./class/dataVideoAll');
 
 
@@ -8,6 +9,11 @@ ipcRenderer.on('all-available-videos', (event, data) => {
     const videoAll = new dataVideoAll();
     videoAll.getAllVideoList(data);
     videoAll.addAllButton();
+});
+
+ipcRenderer.on('add-data-from-server-to-playlist', (event, data) => {
+    const videoAll = new dataVideoAll();
+    videoAll.getAllVideoList(data);
 });
 
 ipcRenderer.on('get-status', (event, status) => {
@@ -23,6 +29,8 @@ ipcRenderer.on('get-status-load', (event, status) => {
 
 ipcRenderer.on('get-time', (event, data) => {
     console.log(data);
+    const test = new BrowserWindow();
+    test.setProgressBar(0.5);
 });
 
 ipcRenderer.on('get-status-save', (event, status) => {
