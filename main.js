@@ -1,5 +1,5 @@
 const electron = require('electron');
-const {app, BrowserWindow, ipcMain, Menu} = require('electron');
+const {app, BrowserWindow, ipcMain, Menu, dialog} = require('electron');
 const Playlist = require('./playlist.js');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
@@ -81,13 +81,23 @@ function createWindow() {
         db.serialize(function (err) {
             db.each("SELECT COUNT(*) AS number FROM videoFile2", function (err, row) {
                 // console.log(row.id + ": " + row.name + " " + row.changed);
-                console.log(row.number);
+                if (row.number === 0) {
+                    dialog.showMessageBox({
+                        title: "No data",
+                        type: "info",
+                        message: "No data in database",
+                        buttons: ["OK"]
+                    });
+                    console.log("no data");
+                } else {
+                    console.log(row.number);
+                }
             });
             db.run("DELETE FROM videoFile2");
         });
     });
 
-    ipcMain.on('get-data-from-database', (event) =>{
+    ipcMain.on('get-data-from-database', (event) => {
         db.serialize(function (err) {
             db.each("SELECT rowid AS id, name, changed  FROM videoFile2", function (err, row) {
                 event.reply('add-data-from-server-to-playlist', JSON.stringify([row]))

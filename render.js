@@ -1,5 +1,6 @@
 const {ipcRenderer} = require('electron');
-const { BrowserWindow } = require('electron')
+const {dialog} = require('electron').remote
+const {BrowserWindow} = require('electron');
 const dataVideoAll = require('./class/dataVideoAll');
 
 
@@ -37,7 +38,6 @@ ipcRenderer.on('get-status-save', (event, status) => {
     const videoAll = new dataVideoAll();
     videoAll.saveItem();
 });
-
 
 
 

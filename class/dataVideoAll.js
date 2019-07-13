@@ -12,7 +12,7 @@ const sort = require('sortablejs');
 //TODO Startmenu progres bar https://electronjs.org/docs/tutorial/progress-bar
 //TODO SORT https://github.com/SortableJS/Sortable +
 //TODO find event after finish animation in Sortable
-//TODO database handle error
+//TODO database handle error +
 
 
 class dataVideoAll {
