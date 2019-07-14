@@ -70,13 +70,18 @@ class VideoQueue {
 
 
         await new Promise(async (resolve, reject) => {
+            let countHowMeny = 0;
             const intervalFunction = (async () => {
                 const videoinfo = await connection.info(1, 1);
                 const videotime2 = videoinfo.response.data.stage;
                 const videotimefirst = videotime2.layer.layer_1.foreground.file.time[0];
                 const videotimelast = videotime2.layer.layer_1.foreground.file.time[1];
                 console.log(videotimefirst, videotimelast);
-                const decimalnumber = new Decimal(videotimelast); // pakeisti pavadinima ne i X
+                const decimalnumber = new Decimal(videotimelast);
+                const countparts = 1/(videotimelast*10);
+                countHowMeny+=countparts;
+
+                this.win.setProgressBar(countHowMeny);
                 this.win.webContents.send('get-time', JSON.stringify({
                     nowTime: videotimefirst,
                     endTime: videotimelast,
@@ -88,11 +93,13 @@ class VideoQueue {
                     clearInterval(intervalId);
                     const notificend = new Notifier();
                     notificend.notification(`${entry.name} Baigė groti`, entry.name);
+                    this.win.setProgressBar(-1);
+                    console.log(countHowMeny);
                     resolve();
                 }
             });
 
-            const intervalId = setInterval(intervalFunction, 40);
+            const intervalId = setInterval(intervalFunction, 100);
             await intervalFunction();
         });
         await connection.stop(1, 1);

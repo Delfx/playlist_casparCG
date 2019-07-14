@@ -6,6 +6,8 @@ const path = require('path');
 const db = new sqlite3.Database(path.join('DataBase', 'filename2'));
 
 
+
+
 let win;
 
 function createWindow() {
@@ -69,7 +71,7 @@ function createWindow() {
     const play = new Playlist(win);
 
 
-    // win.webContents.send('get-time-all', ());
+
 
     ipcMain.on('get-all-available-videos', async event => {
         const queue = new Playlist();
@@ -124,11 +126,9 @@ function createWindow() {
         }
 
         try {
-
             await play.runPlaylist(data);
             event.reply('get-status', 1);
             dataBaseStart();
-
         } catch (err) {
             console.log(err);
         }

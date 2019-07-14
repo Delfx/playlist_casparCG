@@ -4,14 +4,12 @@ const moment = require('moment');
 const fsPromises = require('fs').promises;
 const fs = require('fs');
 const path = require('path');
-const sort = require('sortablejs');
+const Sort = require('sortablejs');
 
 
-
-
-//TODO Startmenu progres bar https://electronjs.org/docs/tutorial/progress-bar
+//TODO Startmenu progres bar https://electronjs.org/docs/tutorial/progress-bar+
 //TODO SORT https://github.com/SortableJS/Sortable +
-//TODO find event after finish animation in Sortable
+//TODO find event after finish animation in Sortable+
 //TODO database handle error +
 
 
@@ -20,6 +18,21 @@ class dataVideoAll {
 
     serverDeleteButton() {
         ipcRenderer.send('delete-all-database-items');
+    }
+
+    sortabletable() {
+        const getTable = document.querySelector("#myTable tbody");
+        // const getTable2 = document.getElementById("myTable");
+        // getTable2.tBodies[0];
+        const sortable = new Sort(getTable, {
+            animation: 150,
+            ghostClass: 'blue-background-class',
+            onEnd: function (/**Event*/evt) {
+                console.log(evt.newIndex);
+
+            }
+
+        });
     }
 
     deleteFromDataBaseButton() {
@@ -40,7 +53,7 @@ class dataVideoAll {
         createButton.id = "addFromBase";
         createButton.onclick = () => {
             this.deleteRows();
-            ipcRenderer.send('get-data-from-database', ()=>{
+            ipcRenderer.send('get-data-from-database', () => {
             })
         };
         document.body.appendChild(createButton);
@@ -176,7 +189,7 @@ class dataVideoAll {
             ipcRenderer.send('playout', allItem);
             document.getElementById("submitbutton").disabled = true;
             const dir = './savedfile';
-            if (!fs.existsSync(dir)){
+            if (!fs.existsSync(dir)) {
                 fsPromises.mkdir(dir);
                 this.saveFile("savedfile", "test.txt", JSON.stringify(allItem));
             }
