@@ -11,8 +11,8 @@ const connection = new CasparCG();
 // run_playlist _ _
 // runPlaylist
 
-//TODO casparcg show title
-//TODO create HTML page title, with css page size; on body
+//TODO casparcg show title+
+//TODO create HTML page title, with css page size; on body+
 //
 
 
@@ -35,7 +35,6 @@ class VideoQueue {
             try {
                 console.log('--- GROJAM ', entry.name);
                 await connection.play(1, 1, entry.name);
-                await connection.cgAdd(1,0,1, "lower-third-responsive", 0);
                 await this.countframe(entry);
 
             } catch (err) {
@@ -55,7 +54,9 @@ class VideoQueue {
         notificbegin.notification(`${entry.name} Pradėjo groti`, entry.name);
 
         console.log('-- ISKVIECIAM');
-
+        setTimeout(function(){
+            connection.cgAdd(1,0,1, "lower-third-responsive", 0);
+        }, 2000);
         await new Promise(resolve => setTimeout(resolve, 200));
 
         const videoinfo = await connection.info(1, 1);
@@ -84,8 +85,8 @@ class VideoQueue {
                 const videotimelast = videotime2.layer.layer_1.foreground.file.time[1];
                 console.log(videotimefirst, videotimelast);
                 const decimalnumber = new Decimal(videotimelast);
-                const countpart2 = videotimefirst/videotimelast;
-                this.win.setProgressBar(countpart2);
+                const progresBar = videotimefirst/videotimelast;
+                this.win.setProgressBar(progresBar);
                 this.win.webContents.send('get-time', JSON.stringify({
                     nowTime: videotimefirst,
                     endTime: videotimelast,

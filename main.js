@@ -113,8 +113,6 @@ function createWindow() {
         function dataBaseStart() {
             db.serialize(function () {
                 db.run("CREATE TABLE IF NOT EXISTS videoFile2 (name TEXT,changed TEXT)");
-                //TODO delete when button.+
-                //TODO add from database +
                 const stmt = db.prepare("INSERT INTO videoFile2 VALUES (?, ?)");
                 for (const entry of data) {
                     stmt.run(entry.name, entry.changed);
