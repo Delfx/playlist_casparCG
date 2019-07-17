@@ -11,6 +11,12 @@ const connection = new CasparCG();
 // run_playlist _ _
 // runPlaylist
 
+//TODO casparcg show title
+//TODO create HTML page title, with css page size; on body
+//
+
+
+
 class VideoQueue {
 
     constructor(win) {
@@ -29,6 +35,7 @@ class VideoQueue {
             try {
                 console.log('--- GROJAM ', entry.name);
                 await connection.play(1, 1, entry.name);
+                await connection.cgAdd(1,0,1, "lower-third-responsive", 0);
                 await this.countframe(entry);
 
             } catch (err) {
@@ -70,7 +77,6 @@ class VideoQueue {
 
 
         await new Promise(async (resolve, reject) => {
-            let countHowMeny = 0;
             const intervalFunction = (async () => {
                 const videoinfo = await connection.info(1, 1);
                 const videotime2 = videoinfo.response.data.stage;
@@ -78,10 +84,8 @@ class VideoQueue {
                 const videotimelast = videotime2.layer.layer_1.foreground.file.time[1];
                 console.log(videotimefirst, videotimelast);
                 const decimalnumber = new Decimal(videotimelast);
-                const countparts = 1/(videotimelast*10);
-                countHowMeny+=countparts;
-
-                this.win.setProgressBar(countHowMeny);
+                const countpart2 = videotimefirst/videotimelast;
+                this.win.setProgressBar(countpart2);
                 this.win.webContents.send('get-time', JSON.stringify({
                     nowTime: videotimefirst,
                     endTime: videotimelast,
@@ -92,9 +96,9 @@ class VideoQueue {
                     console.log("isgrojo" + entry.name);
                     clearInterval(intervalId);
                     const notificend = new Notifier();
+                    connection.cgStop(1,0,1);
                     notificend.notification(`${entry.name} Baigė groti`, entry.name);
                     this.win.setProgressBar(-1);
-                    console.log(countHowMeny);
                     resolve();
                 }
             });
