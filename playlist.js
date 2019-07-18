@@ -3,6 +3,7 @@ const Decimal = require('decimal.js');
 const Notifier = require('./class/Notification.js');
 
 
+
 const connection = new CasparCG();
 
 // Playlist > run
@@ -53,10 +54,17 @@ class VideoQueue {
         notificbegin.notification(`${entry.name} Pradėjo groti`, entry.name);
 
         console.log('-- ISKVIECIAM');
-        setTimeout(function () {
-            connection.cgAdd(1, 0, 1, "lower-third-responsive",
-                0, JSON.stringify({name: "Vytas", title:"test test"}));
-        }, 2000);
+
+
+
+        // ipcMain.on('send-template-data', async (event, data) => {
+        //     await console.log(data);
+        // });
+            // console.log(data);
+            // connection.cgAdd(1, 0, 1, "lower-third-responsive",
+            //         0, data);
+
+
         await new Promise(resolve => setTimeout(resolve, 200));
 
         const videoinfo = await connection.info(1, 1);
