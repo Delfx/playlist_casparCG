@@ -16,7 +16,6 @@ const connection = new CasparCG();
 //
 
 
-
 class VideoQueue {
 
     constructor(win) {
@@ -54,8 +53,9 @@ class VideoQueue {
         notificbegin.notification(`${entry.name} Pradėjo groti`, entry.name);
 
         console.log('-- ISKVIECIAM');
-        setTimeout(function(){
-            connection.cgAdd(1,0,1, "lower-third-responsive", 0);
+        setTimeout(function () {
+            connection.cgAdd(1, 0, 1, "lower-third-responsive",
+                0, JSON.stringify({name: "Vytas", title:"test test"}));
         }, 2000);
         await new Promise(resolve => setTimeout(resolve, 200));
 
@@ -85,7 +85,7 @@ class VideoQueue {
                 const videotimelast = videotime2.layer.layer_1.foreground.file.time[1];
                 console.log(videotimefirst, videotimelast);
                 const decimalnumber = new Decimal(videotimelast);
-                const progresBar = videotimefirst/videotimelast;
+                const progresBar = videotimefirst / videotimelast;
                 this.win.setProgressBar(progresBar);
                 this.win.webContents.send('get-time', JSON.stringify({
                     nowTime: videotimefirst,
@@ -97,7 +97,7 @@ class VideoQueue {
                     console.log("isgrojo" + entry.name);
                     clearInterval(intervalId);
                     const notificend = new Notifier();
-                    connection.cgStop(1,0,1);
+                    connection.cgStop(1, 0, 1);
                     notificend.notification(`${entry.name} Baigė groti`, entry.name);
                     this.win.setProgressBar(-1);
                     resolve();
