@@ -86,6 +86,17 @@ class dataVideoAll {
         document.body.appendChild(createButton);
     }
 
+    templatesButton(cellThree) {
+        const entry = cellThree.parentNode;
+        const createButton = document.createElement("input");
+        createButton.setAttribute("type", "submit");
+        createButton.id = "templatebutton";
+        createButton.onclick = () => {
+            ipcRenderer.send('show-templates-menu');
+        };
+        cellThree.appendChild(createButton);
+    }
+
 
     async saveFile(destination, filename, data) {
         const file = path.join(destination, filename);
@@ -217,7 +228,7 @@ class dataVideoAll {
         document.body.appendChild(createButton);
     }
 
-    createButton(cellName, idName, rowId) {
+    deleteButton(cellName, idName, rowId) {
         const createButton = document.createElement("BUTTON");
         const createButtonText = document.createTextNode("Delete");
         createButton.appendChild(createButtonText);
@@ -241,7 +252,7 @@ class dataVideoAll {
 
     }
 
-    creattextinput(){
+    creattextinput() {
         const getInputField = document.querySelector("#templateInputFields");
         const inputFieldName = document.createElement("input");
         inputFieldName.classList.add("templateName");
@@ -255,13 +266,15 @@ class dataVideoAll {
         getInputField.appendChild(inputFieldDescription);
     }
 
-    getTextFromInputField(){
+    getTextFromInputField() {
         const getInputFieldName = document.querySelector(".templateName");
         const getInputFieldDescription = document.querySelector(".templateDescription");
         // console.log(JSON.stringify({name: getInputFieldName.value,
         //     description: getInputFieldDescription.value}));
-        ipcRenderer.send('send-template-data', JSON.stringify({name: getInputFieldName.value,
-            description: getInputFieldDescription.value}));
+        ipcRenderer.send('send-template-data', JSON.stringify({
+            name: getInputFieldName.value,
+            description: getInputFieldDescription.value
+        }));
     }
 
     addAllButton() {
@@ -353,8 +366,8 @@ class dataVideoAll {
             };
             cellTwo.addEventListener("click", onClickChangeDate, true);
 
-
-            this.createButton(cellThree, entry.name, rowLegth);
+            this.templatesButton(cellThree);
+            this.deleteButton(cellThree, entry.name, rowLegth);
             this.checkbox(checkbox, entry.name);
 
         }

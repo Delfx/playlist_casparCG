@@ -4,8 +4,6 @@ const Playlist = require('./playlist.js');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const db = new sqlite3.Database(path.join('DataBase', 'filename2'));
-const {CasparCG} = require("casparcg-connection");
-
 
 
 let win;
@@ -69,12 +67,16 @@ function createWindow() {
     });
     // NodeJS
     const play = new Playlist(win);
-    const connection = new CasparCG();
 
-    ipcMain.on('send-template-data',  (event, data) => {
-         console.log(JSON.parse(data));
-        connection.cgAdd(1, 0, 1, "lower-third-responsive",
-            0, data);
+
+    ipcMain.on('send-template-data', (event, data) => {
+        try {
+
+            play.templatePlay(JSON.parse(data));
+        } catch (e) {
+            console.log(e);
+        }
+
     });
 
     ipcMain.on('get-all-available-videos', async event => {
@@ -110,6 +112,22 @@ function createWindow() {
             });
 
         });
+    });
+
+    ipcMain.on('show-templates-menu', event => {
+        const winTemplate = new BrowserWindow({
+            width: 800,
+            height: 600,
+
+            webPreferences: {
+                nodeIntegration: true
+            }
+        });
+//TODO electron browserwindows disable first win when second is open
+//TODO add new table with tempaltes loweer3d names and description.
+        winTemplate.loadFile('templates.html');
+        winTemplate.webContents.openDevTools();
+
     });
 
 

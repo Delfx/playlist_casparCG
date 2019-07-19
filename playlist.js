@@ -12,9 +12,7 @@ const connection = new CasparCG();
 // run_playlist _ _
 // runPlaylist
 
-//TODO casparcg show title+
-//TODO create HTML page title, with css page size; on body+
-//
+
 
 
 class VideoQueue {
@@ -48,22 +46,17 @@ class VideoQueue {
         // await connection.disconnect();
     }
 
+    async templatePlay(data){
+        connection.cgAdd(1, 0, 1, "lower-third-responsive",
+            0, data);
+    }
+
 
     async countframe(entry) {
         const notificbegin = new Notifier();
         notificbegin.notification(`${entry.name} Pradėjo groti`, entry.name);
 
         console.log('-- ISKVIECIAM');
-
-
-
-        // ipcMain.on('send-template-data', async (event, data) => {
-        //     await console.log(data);
-        // });
-            // console.log(data);
-            // connection.cgAdd(1, 0, 1, "lower-third-responsive",
-            //         0, data);
-
 
         await new Promise(resolve => setTimeout(resolve, 200));
 
