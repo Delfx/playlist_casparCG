@@ -48,7 +48,10 @@ class VideoQueue {
 
     async templatePlay(data){
         connection.cgAdd(1, 0, 1, "lower-third-responsive",
-            0, data);
+            1, data);
+        setTimeout( function (){
+            connection.cgStop(1, 0, 1)
+        }, 2000);
     }
 
 
@@ -98,7 +101,6 @@ class VideoQueue {
                     console.log("isgrojo" + entry.name);
                     clearInterval(intervalId);
                     const notificend = new Notifier();
-                    connection.cgStop(1, 0, 1);
                     notificend.notification(`${entry.name} Baigė groti`, entry.name);
                     this.win.setProgressBar(-1);
                     resolve();

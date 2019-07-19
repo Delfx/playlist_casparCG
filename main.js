@@ -71,7 +71,6 @@ function createWindow() {
 
     ipcMain.on('send-template-data', (event, data) => {
         try {
-
             play.templatePlay(JSON.parse(data));
         } catch (e) {
             console.log(e);
