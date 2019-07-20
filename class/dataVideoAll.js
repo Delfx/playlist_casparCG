@@ -16,18 +16,16 @@ class dataVideoAll {
 
     sortabletable() {
         const getTable = document.querySelector("#myTable tbody");
-        // const getTable2 = document.getElementById("myTable");
-        // getTable2.tBodies[0];
         const sortable = new Sort(getTable, {
-            animation: 150,
-            ghostClass: 'blue-background-class',
-            onEnd: function (/**Event*/evt) {
+            animation: 300,
+            onEnd: function (evt) {
                 console.log(evt.newIndex);
 
             }
 
         });
     }
+
 
     deleteFromDataBaseButton() {
         const createButton = document.createElement("input");
@@ -78,11 +76,11 @@ class dataVideoAll {
         const createButton = document.createElement("input");
         createButton.setAttribute("type", "submit");
         createButton.id = "submitbutton";
-        createButton.onclick = () => {
+        createButton.addEventListener("click", () => {
             this.submitItem();
             this.getTextFromInputField();
+        });
 
-        };
         document.body.appendChild(createButton);
     }
 
@@ -91,6 +89,7 @@ class dataVideoAll {
         const createButton = document.createElement("input");
         createButton.setAttribute("type", "submit");
         createButton.id = "templatebutton";
+        createButton.value = "Template";
         createButton.onclick = () => {
             ipcRenderer.send('show-templates-menu');
         };
@@ -235,6 +234,7 @@ class dataVideoAll {
         createButton.setAttribute("id", idName);
         // createButton.setAttribute("onclick", onlickName);
         createButton.addEventListener('click', function (event) {
+            //TODO why?????
             event.preventDefault();
             let options = {
                 buttons: ["Yes", "No"],
@@ -373,6 +373,7 @@ class dataVideoAll {
         }
 
     }
+
 
 
 }

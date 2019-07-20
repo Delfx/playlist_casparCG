@@ -14,6 +14,7 @@ function createWindow() {
         width: 800,
         height: 600,
 
+
         webPreferences: {
             nodeIntegration: true
         }
@@ -117,6 +118,9 @@ function createWindow() {
         const winTemplate = new BrowserWindow({
             width: 800,
             height: 600,
+            parent: win,
+            modal: true,
+            show: false,
 
             webPreferences: {
                 nodeIntegration: true
@@ -124,8 +128,16 @@ function createWindow() {
         });
 //TODO electron browserwindows disable first win when second is open
 //TODO add new table with tempaltes loweer3d names and description.
+        winTemplate.once('ready-to-show', () => {
+            winTemplate.show();
+            winTemplate.removeMenu();
+        });
+        ipcMain.on('close', ()=>{
+            winTemplate.destroy();
+        });
         winTemplate.loadFile('templates.html');
         winTemplate.webContents.openDevTools();
+
 
     });
 

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Player</title>
+</head>
+<body>
+
+<h2>Templates meniu</h2>
+
+<form id="myForm">
+    <table id="myTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div id="templateInputFields"></div>
+    <div id="buttons"></div>
+</form>
+<!--We are using node <script>document.write(process.version.node)</script>,-->
+<!--Chrome <script>document.write(process.versions.chrome)</script>,-->
+<!--and Electron <script>document.write(process.versions.electron)</script>.-->
+<script>
+    require('./templateForm');
+</script>
+</body>
+
+</html>

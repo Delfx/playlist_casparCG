@@ -28,9 +28,6 @@ ipcRenderer.on('get-status-load', (event, status) => {
     videoAll.readFile();
 });
 
-// ipcRenderer.on('get-time', (event, data) => {
-//     console.log(data);
-// });
 
 ipcRenderer.on('get-status-save', (event, status) => {
     const videoAll = new dataVideoAll();
