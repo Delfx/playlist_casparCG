@@ -71,6 +71,15 @@ function createWindow() {
 
 
     ipcMain.on('send-template-data', (event, data) => {
+        db.serialize(function () {
+            db.run("CREATE TABLE IF NOT EXISTS templates (name TEXT,description TEXT,isSelected INTEGER)");
+            const stmt = db.prepare("INSERT INTO templates VALUES (?, ?, ?)");
+            for (const entry of data) {
+                stmt.run(entry.name, entry.description, entry.isSelected);
+            }
+            stmt.finalize();
+        });
+
         try {
             play.templatePlay(JSON.parse(data));
         } catch (e) {
@@ -135,11 +144,13 @@ function createWindow() {
         ipcMain.on('close', ()=>{
             winTemplate.destroy();
         });
-        winTemplate.loadFile('templates.html');
+        winTemplate.loadFile('templatesSelectionMenu.html');
         winTemplate.webContents.openDevTools();
 
 
     });
+
+
 
 
     ipcMain.on('playout', async (event, data) => {

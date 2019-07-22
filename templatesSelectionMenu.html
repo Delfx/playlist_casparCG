@@ -6,15 +6,30 @@
 </head>
 <body>
 
-<h2>Templates meniu</h2>
+<h2>Templates menu</h2>
 
+<h4>Enter name and description</h4>
+<form>
+    <tr>
+        <th>
+            <input id="addName" type="text" name="FirstName" value="Name">
+        </th>
+        <th>
+            <input id="addDesc" type="text" name="Description" value="Description">
+        </th>
+        <th>
+            <button id="addButton" type="button">Add</button>
+        </th>
+    </tr>
+</form>
 <form id="myForm">
     <table id="myTable">
         <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-            </tr>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th></th>
+        </tr>
         </thead>
         <tbody></tbody>
     </table>

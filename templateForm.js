@@ -13,22 +13,30 @@ class templateRender {
         createButton.setAttribute("type", "submit");
         createButton.id = "submitbutton";
         createButton.value = "Close";
-        createButton.addEventListener('click', (event)=>{
+        createButton.addEventListener('click', (event) => {
             // event.preventDefault();
             ipcRenderer.send('close')
         });
         document.body.appendChild(createButton);
     }
 
-    createAllButtons(){
-        this.createCloseButton()
+    addTemplateNameAndDescriptionToDataBase() {
+        const selectName = document.querySelector("#addName");
+        const selectDesc = document.querySelector("#addDesc");
+        const selectAddButton = document.querySelector("#addButton");
+        selectAddButton.addEventListener("click", ()=>{
+            ipcRenderer.send('send-template-data', JSON.stringify({
+                name: selectName.value,
+                description: selectDesc.value
+            }));
+        });
     }
 
 }
 
 
-
 const template = new templateRender();
-template.createAllButtons();
+template.createCloseButton();
+template.addTemplateNameAndDescriptionToDataBase();
 
 
