@@ -73,29 +73,44 @@ function createWindow() {
     ipcMain.on('send-template-data', (event, data) => {
         const dataAll = JSON.parse(data);
         db.serialize(function () {
-            db.run("CREATE TABLE IF NOT EXISTS templates (name TEXT, description TEXT, ifCheck INTEGER)");
-            const stmt = db.prepare("INSERT INTO templates VALUES (?, ?, ?)");
+            db.run("CREATE TABLE IF NOT EXISTS templates (name TEXT, description TEXT)");
+            const stmt = db.prepare("INSERT INTO templates VALUES (?, ?)");
             for (const entry of [dataAll]) {
                 stmt.run(entry.name, entry.description);
+                console.log(entry);
             }
             stmt.finalize();
         });
 
-        db.serialize(function () {
-            db.each("SELECT rowid AS id, name, description, ifCheck FROM templates", function (err, row) {
-                event.reply('get-all-templates-name-from-database', JSON.stringify(row));
-                console.log(row.id + ": " + row.name);
-            });
+        db.each("SELECT rowid AS id, name, description FROM templates", function (err, row) {
+            event.reply('get-all-templates-name-from-database', JSON.stringify(row));
+            console.log(row);
+            // console.log(row.id + "  " + row.name + " " + row.time);
         });
+
 
     });
 
+    ipcMain.on('add-template-to-database', (event, data) => {
+        db.serialize(function () {
+            db.run("DELETE FROM TemplateOnVideo");
+            db.run("CREATE TABLE IF NOT EXISTS TemplateOnVideo (name TEXT, description TEXT)");
+            const stmt = db.prepare("INSERT INTO TemplateOnVideo VALUES (?, ?)");
+            for (const entry of [data]) {
+                stmt.run(entry.name, entry.description);
+            }
+            stmt.finalize();
+
+            db.each("SELECT name, description FROM TemplateOnVideo", function (err, row) {
+                console.log(row.name + " " + row.description);
+            });
+        });
+    });
 
     ipcMain.on('send-event-reply-template-onopen', async (event) => {
         db.serialize(function () {
-            db.each("SELECT rowid AS id, name, description, ifCheck FROM templates", function (err, row) {
+            db.each("SELECT rowid AS id, name, description FROM templates", function (err, row) {
                 event.reply('get-all-templates-name-from-database-onopen', row);
-                // console.log(row.id + ": " + row.name + " " + "ifCheck" + ": " + row.ifCheck);
             });
         });
     });
