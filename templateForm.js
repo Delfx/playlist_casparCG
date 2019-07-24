@@ -6,7 +6,20 @@ const fs = require('fs');
 const path = require('path');
 
 
+//TODO add time begin and
+//TODO delete button
+//TODO add ID
+
 class templateRender {
+
+
+    constructor() {
+        ipcRenderer.on('send-data-to-template', (event, data) => {
+            this.data = JSON.parse(data);
+            console.log(this.data.id);
+        });
+    };
+
 
     createCloseButton() {
         const createButton = document.createElement("input");
@@ -20,6 +33,7 @@ class templateRender {
         document.body.appendChild(createButton);
     }
 
+
     addTemplateNameAndDescriptionToDataBase() {
         const selectName = document.querySelector("#addName");
         const selectDesc = document.querySelector("#addDesc");
@@ -29,15 +43,19 @@ class templateRender {
             if (data === null) {
                 console.log("emty");
             } else {
-                this.showTemplates(JSON.stringify(data));
+                this.showTemplates(data);
             }
         });
         selectAddButton.addEventListener("click", (event) => {
-            ipcRenderer.send('send-template-data', JSON.stringify({
+            const oneTemplate = {
                 name: selectName.value,
-                description: selectDesc.value,
-            }));
-            this.deleteRows();
+                description: selectDesc.value
+            };
+
+            ipcRenderer.send('send-template-data', JSON.stringify(oneTemplate));
+
+            this.addOneTemplate(oneTemplate);
+            // this.deleteRows();
         });
 
     }
@@ -49,26 +67,30 @@ class templateRender {
         });
     }
 
+
+    addOneTemplate(entry) {
+        const selectTbody = document.querySelector("#myTable tbody");
+        const createName = document.createTextNode(entry.name);
+        const createDesc = document.createTextNode(entry.description);
+        const createButton = document.createElement("BUTTON");
+        createButton.textContent = "Submit";
+        createButton.addEventListener("click", () => {
+            ipcRenderer.send('add-template-to-database', entry);
+            ipcRenderer.send('close')
+        });
+        const row = selectTbody.insertRow();
+        const cell1 = row.insertCell();
+        const cell2 = row.insertCell();
+        const cell3 = row.insertCell();
+        cell1.appendChild(createName);
+        cell2.appendChild(createDesc);
+        cell3.appendChild(createButton);
+    }
+
     showTemplates(data) {
         const dataAll = JSON.parse(data);
-        for (let entry of [dataAll]) {
-            const selectTbody = document.querySelector("#myTable tbody");
-            const createName = document.createTextNode(entry.name);
-            const createDesc = document.createTextNode(entry.description);
-            const createButton = document.createElement("BUTTON");
-            createButton.textContent = "Submit";
-            createButton.addEventListener("click", ()=>{
-                ipcRenderer.send('add-template-to-database', entry);
-                ipcRenderer.send('close')
-            });
-            const row = selectTbody.insertRow();
-            const cell1 = row.insertCell();
-            const cell2 = row.insertCell();
-            const cell3 = row.insertCell();
-            cell1.dataset.id = entry.id;
-            cell1.appendChild(createName);
-            cell2.appendChild(createDesc);
-            cell3.appendChild(createButton);
+        for (const entry of dataAll) {
+            this.addOneTemplate(entry);
         }
     }
 
@@ -78,7 +100,6 @@ class templateRender {
             selectTbody.deleteRow(-1);
         }
     }
-
 
 
 }

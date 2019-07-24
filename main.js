@@ -83,11 +83,11 @@ function createWindow() {
             stmt.finalize();
         });
 
-        db.each("SELECT rowid AS id, name, description FROM templates", function (err, row) {
-            event.reply('get-all-templates-name-from-database', JSON.stringify(row));
-            console.log(row);
-            // console.log(row.id + "  " + row.name + " " + row.time);
-        });
+        // db.each("SELECT rowid AS id, name, description FROM templates", function (err, row) {
+        //     event.reply('get-all-templates-name-from-database', JSON.stringify(row));
+        //     console.log(row);
+        //     // console.log(row.id + "  " + row.name + " " + row.time);
+        // });
 
 
     });
@@ -104,7 +104,7 @@ function createWindow() {
         db.serialize(function () {
             db.each("SELECT COUNT(*) AS number FROM TemplateOnVideo", function (err, row) {
                 if (row.number === 0) {
-                    db.run("CREATE TABLE IF NOT EXISTS TemplateOnVideo (name TEXT, description TEXT)");
+                    // db.run("CREATE TABLE IF NOT EXISTS TemplateOnVideo (name TEXT, description TEXT)");
                     const stmt = db.prepare("INSERT INTO TemplateOnVideo VALUES (?, ?)");
                     for (const entry of [data]) {
                         stmt.run(entry.name, entry.description);
@@ -113,7 +113,7 @@ function createWindow() {
 
                 } else {
                     db.run("DELETE FROM TemplateOnVideo");
-                    db.run("CREATE TABLE IF NOT EXISTS TemplateOnVideo (name TEXT, description TEXT)");
+                    // db.run("CREATE TABLE IF NOT EXISTS TemplateOnVideo (name TEXT, description TEXT)");
                     const stmt = db.prepare("INSERT INTO TemplateOnVideo VALUES (?, ?)");
                     for (const entry of [data]) {
                         stmt.run(entry.name, entry.description);
@@ -131,8 +131,8 @@ function createWindow() {
 
     ipcMain.on('send-event-reply-template-onopen', async (event) => {
         db.serialize(function () {
-            db.each("SELECT rowid AS id, name, description FROM templates", function (err, row) {
-                event.reply('get-all-templates-name-from-database-onopen', row);
+            db.all("SELECT rowid AS id, name, description FROM templates", function (err, rows) {
+                event.reply('get-all-templates-name-from-database-onopen', JSON.stringify(rows));
             });
         });
     });
@@ -172,7 +172,7 @@ function createWindow() {
         });
     });
 
-    ipcMain.on('show-templates-menu', event => {
+    ipcMain.on('show-templates-menu', (event, data) => {
         const winTemplate = new BrowserWindow({
             width: 800,
             height: 600,
@@ -186,9 +186,12 @@ function createWindow() {
         });
 //TODO electron browserwindows disable first win when second is open+
 //TODO add new table with tempaltes loweer3d names and description.
+
+
         winTemplate.once('ready-to-show', () => {
             winTemplate.show();
             winTemplate.removeMenu();
+            winTemplate.webContents.send('send-data-to-template', data);
         });
         ipcMain.on('close', () => {
             winTemplate.destroy();

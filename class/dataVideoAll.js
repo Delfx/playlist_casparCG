@@ -91,7 +91,7 @@ class dataVideoAll {
         createButton.id = "templatebutton";
         createButton.value = "Template";
         createButton.onclick = () => {
-            ipcRenderer.send('show-templates-menu');
+            ipcRenderer.send('show-templates-menu', JSON.stringify({id: entry.dataset.id}));
         };
         cellThree.appendChild(createButton);
     }
@@ -352,7 +352,6 @@ class dataVideoAll {
         }
 
     }
-
 
 
 }
