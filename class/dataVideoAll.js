@@ -78,7 +78,7 @@ class dataVideoAll {
         createButton.id = "submitbutton";
         createButton.addEventListener("click", () => {
             this.submitItem();
-            this.getTextFromInputField();
+            this.sendTemplateTopPlay();
         });
 
         document.body.appendChild(createButton);
@@ -252,33 +252,12 @@ class dataVideoAll {
 
     }
 
-    creattextinput() {
-        const getInputField = document.querySelector("#templateInputFields");
-        const inputFieldName = document.createElement("input");
-        inputFieldName.classList.add("templateName");
-        inputFieldName.setAttribute("type", "text");
-        inputFieldName.setAttribute("value", "Name");
-        const inputFieldDescription = document.createElement("input");
-        inputFieldDescription.classList.add("templateDescription");
-        inputFieldDescription.setAttribute("type", "text");
-        inputFieldDescription.setAttribute("value", "Description");
-        getInputField.appendChild(inputFieldName);
-        getInputField.appendChild(inputFieldDescription);
-    }
 
-    getTextFromInputField() {
-        const getInputFieldName = document.querySelector(".templateName");
-        const getInputFieldDescription = document.querySelector(".templateDescription");
-        // console.log(JSON.stringify({name: getInputFieldName.value,
-        //     description: getInputFieldDescription.value}));
-        ipcRenderer.send('send-template-data', JSON.stringify({
-            name: getInputFieldName.value,
-            description: getInputFieldDescription.value
-        }));
+    sendTemplateTopPlay() {
+        ipcRenderer.send('send-template-data-to-play');
     }
 
     addAllButton() {
-        this.creattextinput();
         this.selectAll();
         this.UnSelectAll();
         this.submitButton();

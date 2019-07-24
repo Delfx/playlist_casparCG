@@ -4,6 +4,7 @@ const Playlist = require('./playlist.js');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const db = new sqlite3.Database(path.join('DataBase', 'filename2'));
+db.run("CREATE TABLE IF NOT EXISTS TemplateOnVideo (name TEXT, description TEXT)");
 
 
 let win;
@@ -91,19 +92,40 @@ function createWindow() {
 
     });
 
+
+    ipcMain.on('send-template-data-to-play', () => {
+        db.each("SELECT name, description FROM TemplateOnVideo", function (err, row) {
+            console.log(row.name + " " + row.description);
+            play.templatePlay(row)
+        });
+    });
+
     ipcMain.on('add-template-to-database', (event, data) => {
         db.serialize(function () {
-            db.run("DELETE FROM TemplateOnVideo");
-            db.run("CREATE TABLE IF NOT EXISTS TemplateOnVideo (name TEXT, description TEXT)");
-            const stmt = db.prepare("INSERT INTO TemplateOnVideo VALUES (?, ?)");
-            for (const entry of [data]) {
-                stmt.run(entry.name, entry.description);
-            }
-            stmt.finalize();
+            db.each("SELECT COUNT(*) AS number FROM TemplateOnVideo", function (err, row) {
+                if (row.number === 0) {
+                    db.run("CREATE TABLE IF NOT EXISTS TemplateOnVideo (name TEXT, description TEXT)");
+                    const stmt = db.prepare("INSERT INTO TemplateOnVideo VALUES (?, ?)");
+                    for (const entry of [data]) {
+                        stmt.run(entry.name, entry.description);
+                    }
+                    stmt.finalize();
 
-            db.each("SELECT name, description FROM TemplateOnVideo", function (err, row) {
-                console.log(row.name + " " + row.description);
+                } else {
+                    db.run("DELETE FROM TemplateOnVideo");
+                    db.run("CREATE TABLE IF NOT EXISTS TemplateOnVideo (name TEXT, description TEXT)");
+                    const stmt = db.prepare("INSERT INTO TemplateOnVideo VALUES (?, ?)");
+                    for (const entry of [data]) {
+                        stmt.run(entry.name, entry.description);
+                    }
+                    stmt.finalize();
+
+                }
             });
+
+            // db.run("DELETE FROM TemplateOnVideo");
+
+
         });
     });
 
@@ -144,7 +166,7 @@ function createWindow() {
     ipcMain.on('get-data-from-database', (event) => {
         db.serialize(function (err) {
             db.each("SELECT rowid AS id, name, changed  FROM videoFile2", function (err, row) {
-                event.reply('add-data-from-server-to-playlist', JSON.stringify([row]))
+                event.reply('add-data-from-server-to-playlist', JSON.stringify(row))
             });
 
         });
@@ -162,7 +184,7 @@ function createWindow() {
                 nodeIntegration: true
             }
         });
-//TODO electron browserwindows disable first win when second is open
+//TODO electron browserwindows disable first win when second is open+
 //TODO add new table with tempaltes loweer3d names and description.
         winTemplate.once('ready-to-show', () => {
             winTemplate.show();
