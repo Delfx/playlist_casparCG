@@ -8,6 +8,7 @@ db.run("CREATE TABLE IF NOT EXISTS TemplateOnVideo (name TEXT, description TEXT)
 
 
 let win;
+// let winTemplate;
 
 function createWindow() {
     // Create the browser window.
@@ -70,72 +71,29 @@ function createWindow() {
     // NodeJS
     const play = new Playlist(win);
 
-
-    ipcMain.on('send-template-data', (event, data) => {
-        const dataAll = JSON.parse(data);
-        db.serialize(function () {
-            db.run("CREATE TABLE IF NOT EXISTS templates (name TEXT, description TEXT)");
-            const stmt = db.prepare("INSERT INTO templates VALUES (?, ?)");
-            for (const entry of [dataAll]) {
-                stmt.run(entry.name, entry.description);
-                console.log(entry);
-            }
-            stmt.finalize();
-        });
-
-        // db.each("SELECT rowid AS id, name, description FROM templates", function (err, row) {
-        //     event.reply('get-all-templates-name-from-database', JSON.stringify(row));
-        //     console.log(row);
-        //     // console.log(row.id + "  " + row.name + " " + row.time);
-        // });
-
-
-    });
-
-
-    ipcMain.on('send-template-data-to-play', () => {
-        db.each("SELECT name, description FROM TemplateOnVideo", function (err, row) {
-            console.log(row.name + " " + row.description);
-            play.templatePlay(row)
-        });
-    });
-
-    ipcMain.on('add-template-to-database', (event, data) => {
-        db.serialize(function () {
-            db.each("SELECT COUNT(*) AS number FROM TemplateOnVideo", function (err, row) {
-                if (row.number === 0) {
-                    // db.run("CREATE TABLE IF NOT EXISTS TemplateOnVideo (name TEXT, description TEXT)");
-                    const stmt = db.prepare("INSERT INTO TemplateOnVideo VALUES (?, ?)");
-                    for (const entry of [data]) {
-                        stmt.run(entry.name, entry.description);
-                    }
-                    stmt.finalize();
-
-                } else {
-                    db.run("DELETE FROM TemplateOnVideo");
-                    // db.run("CREATE TABLE IF NOT EXISTS TemplateOnVideo (name TEXT, description TEXT)");
-                    const stmt = db.prepare("INSERT INTO TemplateOnVideo VALUES (?, ?)");
-                    for (const entry of [data]) {
-                        stmt.run(entry.name, entry.description);
-                    }
-                    stmt.finalize();
-
+    ipcMain.on('playout', async (event, data) => {
+        function dataBaseStart() {
+            db.serialize(function () {
+                db.run("CREATE TABLE IF NOT EXISTS videoFile2 (name TEXT,changed TEXT)");
+                const stmt = db.prepare("INSERT INTO videoFile2 VALUES (?, ?)");
+                for (const entry of data) {
+                    stmt.run(entry.name, entry.changed);
                 }
+                stmt.finalize();
+
             });
 
-            // db.run("DELETE FROM TemplateOnVideo");
+        }
 
-
-        });
+        try {
+            await play.runPlaylist(data);
+            event.reply('get-status', 1);
+            dataBaseStart();
+        } catch (err) {
+            console.log(err);
+        }
     });
 
-    ipcMain.on('send-event-reply-template-onopen', async (event) => {
-        db.serialize(function () {
-            db.all("SELECT rowid AS id, name, description FROM templates", function (err, rows) {
-                event.reply('get-all-templates-name-from-database-onopen', JSON.stringify(rows));
-            });
-        });
-    });
 
     ipcMain.on('get-all-available-videos', async event => {
         const queue = new Playlist();
@@ -173,7 +131,7 @@ function createWindow() {
     });
 
     ipcMain.on('show-templates-menu', (event, data) => {
-        const winTemplate = new BrowserWindow({
+       const winTemplate = new BrowserWindow({
             width: 800,
             height: 600,
             parent: win,
@@ -184,8 +142,6 @@ function createWindow() {
                 nodeIntegration: true
             }
         });
-//TODO electron browserwindows disable first win when second is open+
-//TODO add new table with tempaltes loweer3d names and description.
 
 
         winTemplate.once('ready-to-show', () => {
@@ -202,29 +158,68 @@ function createWindow() {
 
     });
 
-
-    ipcMain.on('playout', async (event, data) => {
-        function dataBaseStart() {
-            db.serialize(function () {
-                db.run("CREATE TABLE IF NOT EXISTS videoFile2 (name TEXT,changed TEXT)");
-                const stmt = db.prepare("INSERT INTO videoFile2 VALUES (?, ?)");
-                for (const entry of data) {
-                    stmt.run(entry.name, entry.changed);
-                }
-                stmt.finalize();
-
-            });
-
-        }
-
-        try {
-            await play.runPlaylist(data);
-            event.reply('get-status', 1);
-            dataBaseStart();
-        } catch (err) {
-            console.log(err);
-        }
+    ipcMain.on('send-template-data', (event, data) => {
+        const dataAll = JSON.parse(data);
+        db.serialize(function () {
+            db.run("CREATE TABLE IF NOT EXISTS templates (name TEXT, description TEXT)");
+            const stmt = db.prepare("INSERT INTO templates VALUES (?, ?)");
+            for (const entry of [dataAll]) {
+                stmt.run(entry.name, entry.description, function (err) {
+                    if (err) throw err;
+                    // winTemplate.webContents.send('get-last-database-entry', this.lastID);
+                    event.reply('get-last-database-entry', this);
+                });
+                // {id: this.lastID, name: entry.name, description: entry.description}
+            }
+            stmt.finalize();
+        });
     });
+
+    ipcMain.on('send-template-data-to-get-last', (event) => {
+        db.all("SELECT name, description FROM templates", function (err, row) {
+            event.reply('get-template-data-to-get-last', row)
+        });
+    });
+
+    ipcMain.on('send-template-data-to-play', () => {
+        db.each("SELECT name, description FROM templates", function (err, row) {
+            console.log(row.name + " " + row.description);
+            play.templatePlay(row)
+        });
+    });
+
+    ipcMain.on('add-template-to-database', (event, data) => {
+        db.serialize(function () {
+            db.each("SELECT COUNT(*) AS number FROM TemplateOnVideo", function (err, row) {
+                if (row.number === 0) {
+                    const stmt = db.prepare("INSERT INTO TemplateOnVideo VALUES (?, ?)");
+                    for (const entry of [data]) {
+                        stmt.run(entry.name, entry.description);
+                    }
+                    stmt.finalize();
+
+                } else {
+                    db.run("DELETE FROM TemplateOnVideo");
+                    const stmt = db.prepare("INSERT INTO TemplateOnVideo VALUES (?, ?)");
+                    for (const entry of [data]) {
+                        stmt.run(entry.name, entry.description);
+                    }
+                    stmt.finalize();
+
+                }
+            });
+        });
+    });
+
+    ipcMain.on('send-event-reply-template-onopen', async (event) => {
+        db.serialize(function () {
+            db.all("SELECT rowid AS id, name, description FROM templates", function (err, rows) {
+                event.reply('get-all-templates-name-from-database-onopen', JSON.stringify(rows));
+            });
+        });
+    });
+
+
 
 // dialogbox
 
