@@ -3,7 +3,6 @@ const Decimal = require('decimal.js');
 const Notifier = require('./class/Notification.js');
 
 
-
 const connection = new CasparCG();
 
 // Playlist > run
@@ -11,8 +10,6 @@ const connection = new CasparCG();
 
 // run_playlist _ _
 // runPlaylist
-
-
 
 
 class VideoQueue {
@@ -46,12 +43,15 @@ class VideoQueue {
         // await connection.disconnect();
     }
 
-    async templatePlay(data){
-        connection.cgAdd(1, 0, 1, "lower-third-responsive",
-            1, data);
-        setTimeout( function (){
+    async templatePlay(data) {
+        setTimeout(function () {
+            connection.cgAdd(1, 0, 1, "lower-third-responsive",
+                1, data);
+        }, data.beginTime * 1000);
+
+        setTimeout(function () {
             connection.cgStop(1, 0, 1)
-        }, 2000);
+        }, data.endTime * 1000);
     }
 
 

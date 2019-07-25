@@ -6,8 +6,8 @@ const fs = require('fs');
 const path = require('path');
 
 
-//TODO add time begin and
-//TODO delete button
+//TODO add time begin and +
+//TODO delete button +-
 //TODO add ID
 
 class templateRender {
@@ -36,6 +36,8 @@ class templateRender {
     addTemplateNameAndDescriptionToDataBase() {
         const selectName = document.querySelector("#addName");
         const selectDesc = document.querySelector("#addDesc");
+        const selectBeginTime = document.querySelector('#addBeginTime');
+        const selectEndTime = document.querySelector('#addEndTime');
         const selectAddButton = document.querySelector("#addButton");
         ipcRenderer.send('send-event-reply-template-onopen');
         ipcRenderer.on('get-all-templates-name-from-database-onopen', (event, data) => {
@@ -46,15 +48,20 @@ class templateRender {
                 this.showTemplates(data);
             }
         });
+
         selectAddButton.addEventListener("click", (event) => {
             const oneTemplate = {
+                templateId: this.data.id,
                 name: selectName.value,
-                description: selectDesc.value
+                description: selectDesc.value,
+                beginTime: selectBeginTime.value,
+                endTime: selectEndTime.value
             };
 
-
-            // ipcRenderer.send('send-template-data', JSON.stringify(oneTemplate));
-
+            ipcRenderer.send('send-template-data', JSON.stringify(oneTemplate));
+            // ipcRenderer.on('get-last-database-entry', (event, data) => {
+            //     console.log(data);
+            // });
             this.addOneTemplate(oneTemplate);
         });
 
@@ -67,22 +74,24 @@ class templateRender {
     //     });
     // }
 
-    selectdata() {
-        const selectAddButton2 = document.querySelector("#addButton2");
-        selectAddButton2.addEventListener("click", (event) => {
-            ipcRenderer.send('send-template-data-to-get-last');
-            ipcRenderer.on('get-template-data-to-get-last', (event, data) => {
-                console.log(data);
-            });
-        });
-
-    }
+    // selectdata() {
+    //     const selectAddButton2 = document.querySelector("#addButton2");
+    //     selectAddButton2.addEventListener("click", (event) => {
+    //         ipcRenderer.send('send-template-data-to-get-last');
+    //         ipcRenderer.on('get-template-data-to-get-last', (event, data) => {
+    //             console.log(data);
+    //         });
+    //     });
+    //
+    // }
 
     addOneTemplate(entry) {
         console.log(JSON.stringify(entry));
         const selectTbody = document.querySelector("#myTable tbody");
         const createName = document.createTextNode(entry.name);
         const createDesc = document.createTextNode(entry.description);
+        const createBeginTime = document.createTextNode(entry.beginTime);
+        const createEndTime = document.createTextNode(entry.endTime);
         const createButton = document.createElement("BUTTON");
         const createButtonDelete = document.createElement("BUTTON");
         createButton.textContent = "Submit";
@@ -91,19 +100,25 @@ class templateRender {
             ipcRenderer.send('add-template-to-database', entry);
             ipcRenderer.send('close')
         });
-        createButtonDelete.addEventListener("click", () => {
 
-        });
         const row = selectTbody.insertRow();
+        const rowLegth = selectTbody.rows.length;
         const cell1 = row.insertCell();
         const cell2 = row.insertCell();
         const cell3 = row.insertCell();
         const cell4 = row.insertCell();
-        row.dataset.id = entry.id;
+        const cell5 = row.insertCell();
+        const cell6 = row.insertCell();
+        row.dataset.id = rowLegth;
+        createButtonDelete.addEventListener("click", () => {
+            this.deleteOneTemplate(rowLegth)
+        });
         cell1.appendChild(createName);
         cell2.appendChild(createDesc);
-        cell3.appendChild(createButton);
-        cell4.appendChild(createButtonDelete);
+        cell3.appendChild(createBeginTime);
+        cell4.appendChild(createEndTime);
+        cell5.appendChild(createButton);
+        cell6.appendChild(createButtonDelete);
     }
 
     showTemplates(data) {
@@ -113,11 +128,9 @@ class templateRender {
         }
     }
 
-    deleteOneTemplate() {
+    deleteOneTemplate(rowId) {
         const selectTbody = document.querySelector("#myTable tbody");
-        for (let i = 0, tbodyLenght = selectTbody.rows.length; i < tbodyLenght; i++) {
-            selectTbody.deleteRow(-1);
-        }
+        selectTbody.querySelector(`[data-id="${rowId}"]`).remove();
     }
 
 

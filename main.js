@@ -4,11 +4,11 @@ const Playlist = require('./playlist.js');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const db = new sqlite3.Database(path.join('DataBase', 'filename2'));
-db.run("CREATE TABLE IF NOT EXISTS TemplateOnVideo (name TEXT, description TEXT)");
+db.run("CREATE TABLE IF NOT EXISTS TemplateOnVideo (name TEXT, description TEXT, beginTime INT, endTime INT)");
 
 
 let win;
-// let winTemplate;
+let winTemplate;
 
 function createWindow() {
     // Create the browser window.
@@ -131,7 +131,7 @@ function createWindow() {
     });
 
     ipcMain.on('show-templates-menu', (event, data) => {
-       const winTemplate = new BrowserWindow({
+        winTemplate = new BrowserWindow({
             width: 800,
             height: 600,
             parent: win,
@@ -160,16 +160,15 @@ function createWindow() {
 
     ipcMain.on('send-template-data', (event, data) => {
         const dataAll = JSON.parse(data);
+        console.log(dataAll);
         db.serialize(function () {
-            db.run("CREATE TABLE IF NOT EXISTS templates (name TEXT, description TEXT)");
-            const stmt = db.prepare("INSERT INTO templates VALUES (?, ?)");
+            db.run("CREATE TABLE IF NOT EXISTS templates (template_id INT ,name TEXT, description TEXT, beginTime" +
+                " INT, endTime INT)");
+            const stmt = db.prepare("INSERT INTO templates VALUES (?, ?, ?, ?, ?)");
             for (const entry of [dataAll]) {
-                stmt.run(entry.name, entry.description, function (err) {
+                stmt.run(entry.templateId, entry.name, entry.description, entry.beginTime, entry.endTime, function (err) {
                     if (err) throw err;
-                    // winTemplate.webContents.send('get-last-database-entry', this.lastID);
-                    event.reply('get-last-database-entry', this);
                 });
-                // {id: this.lastID, name: entry.name, description: entry.description}
             }
             stmt.finalize();
         });
@@ -182,7 +181,7 @@ function createWindow() {
     });
 
     ipcMain.on('send-template-data-to-play', () => {
-        db.each("SELECT name, description FROM templates", function (err, row) {
+        db.each("SELECT * FROM TemplateOnVideo", function (err, row) {
             console.log(row.name + " " + row.description);
             play.templatePlay(row)
         });
@@ -192,17 +191,17 @@ function createWindow() {
         db.serialize(function () {
             db.each("SELECT COUNT(*) AS number FROM TemplateOnVideo", function (err, row) {
                 if (row.number === 0) {
-                    const stmt = db.prepare("INSERT INTO TemplateOnVideo VALUES (?, ?)");
+                    const stmt = db.prepare("INSERT INTO TemplateOnVideo VALUES (?, ?, ?, ?)");
                     for (const entry of [data]) {
-                        stmt.run(entry.name, entry.description);
+                        stmt.run(entry.name, entry.description, entry.beginTime, entry.endTime);
                     }
                     stmt.finalize();
 
                 } else {
                     db.run("DELETE FROM TemplateOnVideo");
-                    const stmt = db.prepare("INSERT INTO TemplateOnVideo VALUES (?, ?)");
+                    const stmt = db.prepare("INSERT INTO TemplateOnVideo VALUES (?, ?, ?, ?)");
                     for (const entry of [data]) {
-                        stmt.run(entry.name, entry.description);
+                        stmt.run(entry.name, entry.description, entry.beginTime, entry.endTime);
                     }
                     stmt.finalize();
 
@@ -213,12 +212,11 @@ function createWindow() {
 
     ipcMain.on('send-event-reply-template-onopen', async (event) => {
         db.serialize(function () {
-            db.all("SELECT rowid AS id, name, description FROM templates", function (err, rows) {
+            db.all("SELECT rowid AS id, name, description, beginTime, endTime FROM templates", function (err, rows) {
                 event.reply('get-all-templates-name-from-database-onopen', JSON.stringify(rows));
             });
         });
     });
-
 
 
 // dialogbox
