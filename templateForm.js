@@ -19,8 +19,9 @@ class templateRender {
             this.data = JSON.parse(data);
         });
         ipcRenderer.on('get-last-database-id', (event, data) => {
-            console.log(data.id1);
-            console.log(data.id2);
+            const selectTbody = document.querySelector("#myTable tbody").rows.length;
+            console.log(selectTbody);
+            console.log(data);
         });
     };
 
@@ -65,32 +66,13 @@ class templateRender {
             };
 
             ipcRenderer.send('send-template-data', JSON.stringify(oneTemplate));
-            ipcRenderer.on('get-last-database-id', (event, data) => {
-                console.log(data);
-            });
+
 
             this.addOneTemplate(oneTemplate);
         });
 
     }
 
-
-    // showTemplatesonclick() {
-    //     ipcRenderer.on('get-all-templates-name-from-database', (event, data) => {
-    //         this.showTemplates(data);
-    //     });
-    // }
-
-    // selectdata() {
-    //     const selectAddButton2 = document.querySelector("#addButton2");
-    //     selectAddButton2.addEventListener("click", (event) => {
-    //         ipcRenderer.send('send-template-data-to-get-last');
-    //         ipcRenderer.on('get-template-data-to-get-last', (event, data) => {
-    //             console.log(data);
-    //         });
-    //     });
-    //
-    // }
 
     addOneTemplate(entry) {
         console.log(JSON.stringify(entry));
