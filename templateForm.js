@@ -8,7 +8,8 @@ const path = require('path');
 
 //TODO add time begin and +
 //TODO delete button +-
-//TODO add ID
+//TODO add ID +
+//TODO insert html row dataset id to database.
 
 class templateRender {
 
@@ -16,6 +17,10 @@ class templateRender {
     constructor() {
         ipcRenderer.on('send-data-to-template', (event, data) => {
             this.data = JSON.parse(data);
+        });
+        ipcRenderer.on('get-last-database-id', (event, data) => {
+            console.log(data.id1);
+            console.log(data.id2);
         });
     };
 
@@ -50,6 +55,7 @@ class templateRender {
         });
 
         selectAddButton.addEventListener("click", (event) => {
+            console.log("hello");
             const oneTemplate = {
                 templateId: this.data.id,
                 name: selectName.value,
@@ -59,9 +65,10 @@ class templateRender {
             };
 
             ipcRenderer.send('send-template-data', JSON.stringify(oneTemplate));
-            // ipcRenderer.on('get-last-database-entry', (event, data) => {
-            //     console.log(data);
-            // });
+            ipcRenderer.on('get-last-database-id', (event, data) => {
+                console.log(data);
+            });
+
             this.addOneTemplate(oneTemplate);
         });
 
@@ -110,8 +117,8 @@ class templateRender {
         const cell5 = row.insertCell();
         const cell6 = row.insertCell();
         row.dataset.id = rowLegth;
-        createButtonDelete.addEventListener("click", () => {
-            this.deleteOneTemplate(rowLegth)
+        createButtonDelete.addEventListener("click", (event) => {
+            this.deleteOneTemplate(event.target.parentNode.parentNode)
         });
         cell1.appendChild(createName);
         cell2.appendChild(createDesc);
@@ -128,13 +135,14 @@ class templateRender {
         }
     }
 
-    deleteOneTemplate(rowId) {
-        const selectTbody = document.querySelector("#myTable tbody");
-        selectTbody.querySelector(`[data-id="${rowId}"]`).remove();
+    deleteOneTemplate(parentNode) {
+        parentNode.remove();
     }
 
 
 }
+
+
 
 const template = new templateRender();
 template.createCloseButton();

@@ -90,9 +90,10 @@ class dataVideoAll {
         createButton.setAttribute("type", "submit");
         createButton.id = "templatebutton";
         createButton.value = "Template";
-        createButton.onclick = () => {
+        createButton.addEventListener("click", (event)=>{
             ipcRenderer.send('show-templates-menu', JSON.stringify({id: entry.dataset.id}));
-        };
+            // ipcRenderer.send('send-event-reply-template-onopen');
+        });
         cellThree.appendChild(createButton);
     }
 

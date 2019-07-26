@@ -3,7 +3,9 @@ const {dialog, getGlobal, app} = require('electron').remote;
 const dataVideoAll = require('./class/dataVideoAll');
 
 
+
 ipcRenderer.send('get-all-available-videos');
+
 
 ipcRenderer.on('all-available-videos', (event, data) => {
     const videoAll = new dataVideoAll();

@@ -8,7 +8,7 @@ db.run("CREATE TABLE IF NOT EXISTS TemplateOnVideo (name TEXT, description TEXT,
 
 
 let win;
-let winTemplate;
+
 
 function createWindow() {
     // Create the browser window.
@@ -131,7 +131,7 @@ function createWindow() {
     });
 
     ipcMain.on('show-templates-menu', (event, data) => {
-        winTemplate = new BrowserWindow({
+        const winTemplate = new BrowserWindow({
             width: 800,
             height: 600,
             parent: win,
@@ -149,6 +149,7 @@ function createWindow() {
             winTemplate.removeMenu();
             winTemplate.webContents.send('send-data-to-template', data);
         });
+
         ipcMain.on('close', () => {
             winTemplate.destroy();
         });
@@ -158,21 +159,32 @@ function createWindow() {
 
     });
 
-    ipcMain.on('send-template-data', (event, data) => {
-        const dataAll = JSON.parse(data);
-        console.log(dataAll);
+    ipcMain.on('send-event-reply-template-onopen', async (event) => {
         db.serialize(function () {
-            db.run("CREATE TABLE IF NOT EXISTS templates (template_id INT ,name TEXT, description TEXT, beginTime" +
-                " INT, endTime INT)");
-            const stmt = db.prepare("INSERT INTO templates VALUES (?, ?, ?, ?, ?)");
-            for (const entry of [dataAll]) {
-                stmt.run(entry.templateId, entry.name, entry.description, entry.beginTime, entry.endTime, function (err) {
-                    if (err) throw err;
-                });
-            }
-            stmt.finalize();
+            db.all("SELECT rowid AS id, name, description, beginTime, endTime FROM templates", function (err, rows) {
+                event.reply('get-all-templates-name-from-database-onopen', JSON.stringify(rows));
+            });
         });
     });
+
+    ipcMain.on('send-template-data', (event, data) => {
+            const entry = JSON.parse(data);
+            console.log(entry);
+            db.serialize(function () {
+                db.run("CREATE TABLE IF NOT EXISTS templates (template_id INT ,name TEXT, description TEXT, beginTime" +
+                    " INT, endTime INT)");
+                const stmt = db.prepare("INSERT INTO templates VALUES (?, ?, ?, ?, ?)");
+
+                stmt.run(entry.templateId, entry.name, entry.description, entry.beginTime, entry.endTime, function (err) {
+                    if (err) throw err;
+                    event.reply('get-last-database-id', this.lastID);
+                    // console.log(this.lastID);
+                });
+                stmt.finalize();
+            });
+        }
+    )
+    ;
 
     ipcMain.on('send-template-data-to-get-last', (event) => {
         db.all("SELECT name, description FROM templates", function (err, row) {
@@ -210,19 +222,11 @@ function createWindow() {
         });
     });
 
-    ipcMain.on('send-event-reply-template-onopen', async (event) => {
-        db.serialize(function () {
-            db.all("SELECT rowid AS id, name, description, beginTime, endTime FROM templates", function (err, rows) {
-                event.reply('get-all-templates-name-from-database-onopen', JSON.stringify(rows));
-            });
-        });
-    });
-
 
 // dialogbox
 
 
-    // dialog.showOpenDialog({ properties: ['openFile'] });
+// dialog.showOpenDialog({ properties: ['openFile'] });
 }
 
 
