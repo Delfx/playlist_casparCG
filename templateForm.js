@@ -1,10 +1,5 @@
 const {ipcRenderer} = require('electron');
 
-//TODO add time begin and +
-//TODO delete button +-
-//TODO add ID +
-//TODO insert html row dataset id to database.
-
 class templateRender {
     constructor() {
         ipcRenderer.on('send-data-to-template', (event, data) => {
