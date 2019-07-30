@@ -4,11 +4,29 @@ const Playlist = require('./playlist.js');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const db = new sqlite3.Database(path.join('DataBase', 'filename2'));
-db.run("CREATE TABLE IF NOT EXISTS TemplateOnVideo (name TEXT, description TEXT, beginTime INT, endTime INT)");
 
+db.serialize(function () {
+    db.run("CREATE TABLE IF NOT EXISTS TemplateOnVideo (name TEXT, description TEXT, beginTime INT, endTime INT)", function (err) {
+        if (err) {
+            console.error(err.message);
+        }
+    });
+
+    db.run("CREATE TABLE IF NOT EXISTS templates (template_id INT, name TEXT, description TEXT, beginTime" +
+        " INT ,endTime INT)", function (err) {
+        if (err) {
+            console.error(err.message);
+        }
+    });
+
+    db.run("CREATE TABLE IF NOT EXISTS videoFile2 (name TEXT,changed TEXT)", function (err) {
+        if (err) {
+            console.error(err.message);
+        }
+    });
+});
 
 let win;
-
 
 function createWindow() {
     // Create the browser window.
@@ -34,6 +52,7 @@ function createWindow() {
                             win.webContents.send('get-status-save');
                         }
                     },
+
                     {
                         label: 'Open File',
                         accelerator: 'CmdOrCtrl+L',
@@ -41,16 +60,18 @@ function createWindow() {
                             win.webContents.send('get-status-load');
                         }
                     },
+
                     {
                         label: 'Exit',
                         accelerator: 'CmdOrCtrl+Q',
                         click() {
-                            app.quit()
+                            app.quit();
                         }
                     }
                 ]
             }
         ]);
+
         Menu.setApplicationMenu(menu);
     });
 
@@ -60,34 +81,39 @@ function createWindow() {
     // Open the DevTools.
     win.webContents.openDevTools();
 
-
     // Emitted when the window is closed.
     win.on('closed', () => {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
-        win = null
+        win = null;
     });
+
     // NodeJS
     const play = new Playlist(win);
 
     ipcMain.on('playout', async (event, data) => {
         function dataBaseStart() {
             db.serialize(function () {
-                db.run("CREATE TABLE IF NOT EXISTS videoFile2 (name TEXT,changed TEXT)");
                 const stmt = db.prepare("INSERT INTO videoFile2 VALUES (?, ?)");
+
                 for (const entry of data) {
-                    stmt.run(entry.name, entry.changed);
+                    stmt.run(entry.name, entry.changed, function (err) {
+                        if (err) {
+                            console.error(err.message);
+                        }
+                    });
                 }
+
                 stmt.finalize();
-
             });
-
         }
 
         try {
             await play.runPlaylist(data);
+
             event.reply('get-status', 1);
+
             dataBaseStart();
         } catch (err) {
             console.log(err);
@@ -98,13 +124,18 @@ function createWindow() {
     ipcMain.on('get-all-available-videos', async event => {
         const queue = new Playlist();
         const getall = await queue.getAllvideolist();
+
         event.reply('all-available-videos', JSON.stringify(getall));
     });
 
     ipcMain.on('delete-all-database-items', () => {
-        db.serialize(function (err) {
+        db.serialize(function () {
             db.each("SELECT COUNT(*) AS number FROM videoFile2", function (err, row) {
                 // console.log(row.id + ": " + row.name + " " + row.changed);
+                if (err) {
+                    return console.error(err.message);
+                }
+
                 if (row.number === 0) {
                     dialog.showMessageBox({
                         title: "No data",
@@ -112,21 +143,31 @@ function createWindow() {
                         message: "No data in database",
                         buttons: ["OK"]
                     });
+
                     console.log("no data");
                 } else {
                     console.log(row.number);
+
+                    db.run("DELETE FROM videoFile2", function (err) {
+                        if (err) {
+                            console.error(err.message);
+                        }
+                    });
                 }
             });
-            db.run("DELETE FROM videoFile2");
+
         });
     });
 
     ipcMain.on('get-data-from-database', (event) => {
-        db.serialize(function (err) {
-            db.each("SELECT rowid AS id, name, changed  FROM videoFile2", function (err, row) {
-                event.reply('add-data-from-server-to-playlist', JSON.stringify(row))
-            });
+        db.serialize(function () {
+            db.each('SELECT rowid AS id, name, changed  FROM videoFile2', function (err, row) {
+                if (err) {
+                    return console.error(err.message);
+                }
 
+                event.reply('add-data-from-server-to-playlist', JSON.stringify(row));
+            });
         });
     });
 
@@ -143,7 +184,6 @@ function createWindow() {
             }
         });
 
-
         winTemplate.once('ready-to-show', () => {
             winTemplate.show();
             winTemplate.removeMenu();
@@ -153,13 +193,12 @@ function createWindow() {
         ipcMain.on('close', () => {
             winTemplate.destroy();
         });
+
         winTemplate.loadFile('templatesSelectionMenu.html');
         winTemplate.webContents.openDevTools();
-
-
     });
 
-    ipcMain.on('send-event-reply-template-onopen', async (event) => {
+    ipcMain.on('send-event-reply-template-onopen', (event) => {
         db.serialize(function () {
             db.all("SELECT rowid AS id, name, description, beginTime, endTime FROM templates", function (err, rows) {
                 event.reply('get-all-templates-name-from-database-onopen', JSON.stringify(rows));
@@ -167,24 +206,47 @@ function createWindow() {
         });
     });
 
+
+    ipcMain.on('delete-from-database-by-id', (event, lastDataBaseId) => {
+        console.log(lastDataBaseId);
+
+        db.run(`DELETE FROM templates WHERE rowid=?`, lastDataBaseId, function (err) {
+            if (err) {
+                return console.error(err.message);
+            }
+
+            console.log(`Row(s) deleted ${this.changes}`);
+
+            db.all("SELECT rowid AS id, name FROM templates", function (err, rows) {
+                console.log(rows);
+            });
+        });
+    });
+
     ipcMain.on('send-template-data', (event, data) => {
+        try {
             const entry = JSON.parse(data);
+
             console.log(entry);
+
             db.serialize(function () {
-                db.run("CREATE TABLE IF NOT EXISTS templates (template_id INT ,name TEXT, description TEXT, beginTime" +
-                    " INT, endTime INT)");
                 const stmt = db.prepare("INSERT INTO templates VALUES (?, ?, ?, ?, ?)");
 
                 stmt.run(entry.templateId, entry.name, entry.description, entry.beginTime, entry.endTime, function (err) {
-                    if (err) throw err;
-                    event.reply('get-last-database-id', this.lastID);
-                    // console.log(this.lastID);
+                    if (err) {
+                        return console.error(err.message);
+                    }
+
+                    event.reply('get-last-database-id', this.lastID, entry.rowId);
+                    console.log(this.lastID);
                 });
+
                 stmt.finalize();
             });
+        } catch (e) {
+            console.log(e);
         }
-    )
-    ;
+    });
 
     ipcMain.on('send-template-data-to-get-last', (event) => {
         db.all("SELECT name, description FROM templates", function (err, row) {
